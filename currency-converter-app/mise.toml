@@ -3,3 +3,19 @@
 
 [tools]
 claude = "latest"
+python = "3.12"
+ruff = "latest"
+uv = "latest"
+
+# === Tasks
+[tasks.venv-create]
+description = "⭐ Create project virtual environment (.venv)"
+run = "uv venv"
+
+[tasks.venv-remove]
+description = "💥 Remove project virtual environment completely"
+run = "rm -r .venv"
+
+[tasks.inst]
+description = "Install Python dependencies (dev, test, doc, ...)"
+run = "uv sync --all-extras"
