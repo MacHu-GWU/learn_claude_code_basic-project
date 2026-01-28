@@ -1,11 +1,16 @@
 # CLAUDE.md
 
+## Role
+
+- @./claude/teaching.md
+
+## Overview
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Quick Reference
 
 For app spec, see [app-spec](app-spec.md)
-
 
 ## Prerequisites
 
