@@ -53,3 +53,14 @@ currency-converter/
 ```
 result = amount × (target_rate / source_rate)
 ```
+
+## Error Handling
+
+The app should handle errors gracefully with clear, helpful messages:
+
+- **Negative numbers**: Reject or warn the user (e.g., "Amount must be positive")
+- **Non-numeric input**: Show error if user enters text instead of numbers (e.g., "Please enter a valid number")
+- **Empty or zero input**: Show helpful message (e.g., "Please enter an amount")
+- **Invalid currency selection**: Prevent errors by using only valid currencies in dropdowns
+
+All error messages should be clear and user-friendly.
