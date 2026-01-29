@@ -1,95 +1,139 @@
-# Choosing Your Claude Model
+# Editing Long Messages
 
-> Learn how to select the right AI model in Claude Code to balance capability and quota usage.
+> Learn how to compose and edit long messages efficiently using a markdown file instead of the chat input box.
 
 ## Why This Matters
 
-Imagine this: you're in the middle of learning, asking Claude Code questions, making good progress. Suddenly, a message pops up — "Quota exhausted. Please wait 5 hours."
+Imagine you're working on a complex task. You need to write a detailed prompt to Claude Code — maybe referencing multiple files, explaining context, or listing several requirements. You start typing in the chat input box...
 
-Five hours. Your momentum is gone. Your learning session is over.
+Then you realize you made a typo three lines up. Or you want to reorganize your thoughts. Or you accidentally pressed Enter and sent an incomplete message.
 
-This happens because Claude Code uses a quota system. Every question you ask consumes quota, and more powerful models consume more. On a Team Plan, your quota is shared among team members, so it can run out faster than you expect.
+The chat input box is great for quick questions, but it's terrible for composing longer, thoughtful prompts. There's no easy way to scroll, edit, or organize your thoughts.
 
-The good news? You have control. By choosing the right model for your task, you can stretch your quota much further and avoid that frustrating wait.
+The solution? Write your messages in a markdown file first, then copy and paste into Claude Code. This gives you the full power of your editor — syntax highlighting, easy navigation, undo/redo, and the ability to save your prompts for reference.
 
-## Understanding the Three Models
+## The Message File Approach
 
-Claude Code offers three models. Think of them as three colleagues with different levels of expertise:
+Instead of typing directly in Claude Code, create a file called `.claude/claude-code-messages.md` in your project. This file serves as your "drafting space" for prompts.
 
-- **Opus** is your industry-top expert: Give it the hardest and most critical problems: deep architectural decisions, unresolved edge-case bugs, and research that requires original reasoning and cross-domain insight. Think of Opus as a Distinguished Engineer / Fellow-level technologist at a top tech company — someone who defines standards, writes whitepapers, and shapes technical direction. Powerful, but best used sparingly.
-- **Sonnet** is your Principal-level engineer: It excels at designing and implementing complex systems, writing and reviewing high-quality code, and turning abstract ideas into production-ready solutions. Sonnet maps to a Principal or Senior Staff Engineer — the backbone of serious engineering work and the best choice for most advanced tasks. 
-- **Haiku** is your Senior engineer: Ideal for learning, asking questions, and executing well-defined tasks efficiently. Haiku is reliable, clear, and cost-effective — perfect when the problem is understood and execution matters.
+The file is excluded from git (via `.gitignore`), so it won't clutter your repository. It's purely for your convenience.
 
-Here's the key insight: **for learning, Haiku is usually enough**. Save Opus for when you truly need it.
+Here's how it works:
 
-## How to Switch Models
+1. Write your message in the file
+2. Copy the message
+3. Paste it into Claude Code
+4. Claude responds
+5. When you have another message, write it in the file and repeat
 
-Switching models in Claude Code takes just a few seconds.
+You can keep a history of your prompts by separating them with horizontal lines (`----`). This creates a personal log of what you've asked, which can be helpful for reference.
 
-Open Claude Code in your terminal. Type `/model` and press Enter. You'll see a menu with three options. Use your arrow keys to highlight the model you want, then press Enter to confirm.
+## Writing from Top to Bottom
 
-That's it. Your model is now changed.
+Here's a practical tip that will save you time: **write new messages at the top of the file**.
 
-You can verify the change by looking at the prompt area — Claude Code displays your current model there.
+Why? When you open a file in most editors, the cursor starts at the top. If you keep your latest message at the top, you can quickly see what you last asked without scrolling. Your conversation history reads naturally — newest first, oldest last.
 
-## Where Settings Are Stored
+Your file structure should look like this:
 
-When you switch models, Claude Code remembers your choice. It saves this preference in a file called `.claude/settings.json` in your project directory.
+```markdown
+------------------------------------------------------------------------------
 
-If you open this file, you'll see something like:
+------------------------------------------------------------------------------
 
-```json
-{
-  "model": "haiku"
-}
+------------------------------------------------------------------------------
+(your latest message here - write new ones above this line)
+------------------------------------------------------------------------------
+(newer message here)
+------------------------------------------------------------------------------
+(older message here)
+------------------------------------------------------------------------------
 ```
 
-When you restart Claude Code, it reads this file and uses your saved model. You can also edit this file directly if you prefer — just change the value and save.
+## Referencing Files in Your Messages
 
-This is useful to know because if something seems wrong with your model selection, you can always check this file to see what's actually configured.
+One of the most common reasons to use the message file is when you need to reference specific files in your project.
+
+When you tell Claude Code to look at a file, you should use the **absolute path** — the full path from the root of your filesystem. This removes any ambiguity about which file you mean.
+
+In GitHub Codespaces or VS Code, getting the absolute path is easy:
+
+1. Find the file in the Explorer panel (left sidebar)
+2. Right-click on the file name
+3. Select "Copy Path" (not "Copy Relative Path")
+
+You'll get something like:
+
+```
+/workspaces/my-project/src/config.json
+```
+
+Then in your message, you can write:
+
+```
+Please review the configuration in /workspaces/my-project/src/config.json
+and suggest improvements.
+```
+
+This is much easier to do in a file editor where you can see what you're typing, rather than in a small chat input box.
+
+## Clearing the Chat Input
+
+Sometimes you start typing in Claude Code's chat input and want to start over. Here's what you need to know:
+
+- Press **Ctrl+C once** to clear the current input
+- Press **Ctrl+C twice** to exit Claude Code entirely
+
+This is useful when you've pasted something and want to clear it, or when you changed your mind about what to ask.
 
 ## Hands-on Exercise
 
 Let's practice what you've learned.
 
-**Your task:** Switch to Haiku and verify the change.
+**Your task:** Use the message file to ask Claude Code a question.
 
-Start Claude Code in your terminal. Type `/model` and press Enter. When the menu appears, select Haiku. After confirming, check that the prompt area shows Haiku as your current model.
+First, open `.claude/claude-code-messages-example.md` in your editor. You'll see it already has a sample message at the bottom:
 
-If you want to go further, open `.claude/settings.json` in your editor and confirm that the `model` field shows `haiku`.
+```
+Help me understand what I need to know from README.md
+```
+
+Copy this line and paste it into Claude Code. Watch how Claude reads the README and summarizes the key points for you.
+
+Now try writing your own message in the file. Add a new section at the bottom (below a `----` line) and write a question about any file in this project. Copy and paste it into Claude Code.
 
 ## Common Issues
 
-**The model menu doesn't appear after typing `/model`**
+**Accidentally sent an incomplete message**
 
-Make sure you press Enter after typing the command. The slash command needs to be submitted, not just typed.
+This is exactly why we use the message file approach. If you compose in the file first, you can review and edit before sending. For now, just continue the conversation — Claude will understand if you add more context.
 
-**Your model keeps resetting to something else**
+**Not sure which path to use**
 
-Check if `.claude/settings.json` exists and is writable. If the file doesn't exist or Claude Code can't write to it, your preference won't be saved.
+Always use "Copy Path" (absolute path), not "Copy Relative Path". The absolute path starts from the root (`/`) and includes the full directory structure.
 
-**You see a "quota exhausted" message**
+**File changes aren't reflected**
 
-Switch to Haiku immediately to reduce consumption. If you're already on Haiku, you'll need to wait for the quota to refresh — typically about 5 hours on a Team Plan.
+Make sure you save the file before copying. Most editors show an unsaved indicator (like a dot) in the tab.
 
-## Mentor's Note: The Right Tool for the Job
+## Mentor's Note: Thoughtful Communication
 
-When I started using AI tools, I always reached for the most powerful model. Why settle for less, right?
+When I first started using AI assistants, I would type questions stream-of-consciousness style — just thinking out loud. The results were hit or miss.
 
-But over time, I learned something important: choosing the right tool for the job is a fundamental engineering skill.
+Over time, I learned that the quality of AI responses directly correlates with the quality of your prompts. Taking a moment to compose your thoughts, organize your request, and provide clear context makes a huge difference.
 
-Using Opus to answer a simple question is like driving a truck to buy groceries. It works, but it's wasteful. The best engineers I know are resourceful — they understand constraints and work within them creatively.
+The message file approach isn't just about convenience — it's about building a habit of thoughtful communication. This skill transfers to everything: writing emails, documentation, code comments, and even conversations with colleagues.
 
-This applies everywhere in engineering: choosing the right database for your use case, the right framework for your project, the right level of abstraction for your code. Start building this habit now, with something as simple as model selection.
+The few seconds you spend organizing your thoughts often save minutes of back-and-forth clarification.
 
 ## Quick Reference
 
-- `/model` — Opens the model selection menu
-- Model capability: Opus > Sonnet > Haiku
-- Quota consumption: Opus > Sonnet > Haiku
-- Settings file: `.claude/settings.json`
+- Message file location: `.claude/claude-code-messages.md`
+- Separator between messages: `----` (horizontal line)
+- Copy file path: Right-click → "Copy Path" in VS Code/Codespaces
+- Clear chat input: Ctrl+C (once to clear, twice to exit)
+- Write new messages at the top of the file
 
 ## Further Reading
 
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [Understanding Claude Models](https://platform.claude.com/docs/en/about-claude/models/overview)
+- [Prompt Engineering Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
