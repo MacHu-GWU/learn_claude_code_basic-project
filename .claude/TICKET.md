@@ -8,7 +8,7 @@ Read the tutorial: [Choosing Your Claude Model](https://github.com/MacHu-GWU/lea
 
 ## Actionable Items
 
-1. Read the tutorial in README.md
+1. Read the tutorial in `README.md`
 2. Open Claude Code in your terminal
 3. Use `/model` command to switch to Haiku
 4. Verify your selection by checking the prompt display
