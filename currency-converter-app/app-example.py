@@ -21,7 +21,7 @@ with col1:
     source = st.selectbox("From", currencies, index=currencies.index("USD"))
 
 with col2:
-    target = st.selectbox("To", currencies, index=currencies.index("CNY"))
+    target = st.selectbox("To", currencies, index=currencies.index("EUR"))
 
 # Convert
 st.divider()

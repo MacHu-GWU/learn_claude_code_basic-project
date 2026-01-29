@@ -19,3 +19,7 @@ run = "rm -r .venv"
 [tasks.inst]
 description = "Install Python dependencies (dev, test, doc, ...)"
 run = "uv sync --all-extras"
+
+[tasks.app]
+description = "Run streamlit app"
+run = ".venv/bin/streamlit run app.py"

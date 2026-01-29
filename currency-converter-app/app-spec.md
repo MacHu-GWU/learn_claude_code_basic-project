@@ -8,7 +8,7 @@ A simple local currency converter. User enters an amount, selects source and tar
 
 - **Input field**: Enter amount (default: 100)
 - **Source currency dropdown**: Select currency to convert from (default: USD)
-- **Target currency dropdown**: Select currency to convert to (default: CNY)
+- **Target currency dropdown**: Select currency to convert to (default: EUR)
 - **Output display**: Shows converted amount (updates automatically)
 
 ## Supported Currencies
