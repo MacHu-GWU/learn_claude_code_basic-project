@@ -1,5 +1,5 @@
-[env]
 # See claude code environment variables documents at https://code.claude.com/docs/en/settings
+[env]
 
 [tools]
 claude = "latest"
@@ -9,17 +9,17 @@ uv = "latest"
 
 # === Tasks
 [tasks.venv-create]
-description = "⭐ Create project virtual environment (.venv)"
+description = "✨ Create Python virtual environment (.venv)"
 run = "uv venv"
 
 [tasks.venv-remove]
-description = "💥 Remove project virtual environment completely"
+description = "💥 Remove Python virtual environment folder (.venv)"
 run = "rm -r .venv"
 
 [tasks.inst]
-description = "Install Python dependencies (dev, test, doc, ...)"
+description = "💾 Install Python dependencies (dev, test, doc, etc.) via uv"
 run = "uv sync --all-extras"
 
 [tasks.app]
-description = "Run streamlit app"
+description = "🚀 Run Streamlit app locally"
 run = ".venv/bin/streamlit run app.py"
