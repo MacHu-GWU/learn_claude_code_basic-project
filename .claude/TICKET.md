@@ -8,7 +8,7 @@ Read the tutorial: [Editing Long Messages](https://github.com/MacHu-GWU/learn_cl
 
 ## Actionable Items
 
-1. Read the tutorial in README.md
+1. Read the tutorial in `README.md`
 2. Open `.claude/claude-code-messages-example.md` in your editor
 3. Copy the sample message at the bottom and paste it into Claude Code
 4. Observe how Claude responds to your message
