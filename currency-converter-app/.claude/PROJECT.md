@@ -1,27 +1,22 @@
 # Project Overview
 
-> One-sentence description of what this mini project does.
+A simple streamlit app for converting currencies based on predefined exchange rates.
 
-## Development Environment
+## Development Setup
 
-### Python Version & Runtime
+**Core Configuration Files:**
+- `mise.toml` - Project tasks and tool versions (Claude Code, Python 3.12, uv)
+- `pyproject.toml` - Dependencies and project metadata
+- `.venv/` - Virtual environment directory
+- `.venv/bin/python` - Python executable (always use for running Python)
 
-- **Python Version**: 3.12 (specified in `pyproject.toml` and `mise.toml`)
-- **Virtual Environment**: `.venv/` directory (created by `mise run venv-create`)
-- **Python Executable**: `.venv/bin/python`
-- **Package Manager**: `uv` (latest version via `mise`)
+**Package Manager:** `uv` (via mise)
 
-### Dependency Management
+## Available Tasks
 
-- `pyproject.toml` defines all dependencies with version constraints
-- `uv` handles dependency resolution and lockfile (`uv.lock`)
-- Virtual environment in `.venv/` managed via `mise`
+Run `mise tasks` to see all available commands. Current tasks:
 
-## Key Commands
-
-All commands use `mise` task runner (defined in `mise.toml`). Run `mise tasks` to see all available commands.
-
-### Environment Setup
-
-- `mise run venv-create` - Create virtual environment
-- `mise run inst` - Install all dependencies (runtime + dev + test + doc)
+- `mise run venv-create` - ✨ Create Python virtual environment (.venv)
+- `mise run venv-remove` - 💥 Remove Python virtual environment folder (.venv)
+- `mise run inst` - 💾 Install Python dependencies (dev, test, doc, etc.) via uv
+- `mise run app` - 🚀 Run Streamlit app locally
