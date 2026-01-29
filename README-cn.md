@@ -1,165 +1,182 @@
-# 使用斜杠命令
+# 管理会话（Sessions）
 
-> 学习如何使用斜杠命令快速执行预先构建的提示词模板，而不是每次都输入冗长的指令。
+> 学习 Claude Code 会话如何工作，以及如何跨多个对话管理对话历史。
 
 ## 为什么这很重要
 
-想象你经常需要做同样的任务 — 转换货币、审查代码、编写文档或分析数据。每一次，你都需要粘贴同样的详细指令到 Claude Code 中。
+想象你在处理一个项目，并与 Claude Code 进行讨论。你分享上下文 — 文件路径、要求、你的偏好。Claude 理解一切。
 
-如果你只需要打一个快速命令，Claude 就自动使用正确的提示词，会怎样呢？
+然后你关闭 Claude Code 回到明天。你问 Claude 相同的问题……它什么都不知道。
 
-这正是斜杠命令做的事情。它们像是你最常见工作流的快捷方式 — 节省时间并减少重复。
+这不是 bug — 这就是会话的工作方式。每次你启动 Claude Code，你都会获得一个全新的对话。这很好用来组织事情，但如果你想继续一个之前的对话或审查你之前讨论过的内容呢？
 
-## 什么是斜杠命令？
+这就是会话管理的作用。Claude Code 让你能够：
+- **恢复**一个之前的会话（继续你离开的地方）
+- **浏览**过去的会话（找到并重播旧对话）
+- **保持组织**的对话历史
 
-把斜杠命令想象成一个**提示词模板快捷方式**。它是一种快速注入预先编写的系统提示词而无需手动输入的方式。
+## 什么是会话？
 
-基本思想是：
+一个**会话**是与 Claude Code 的一次单独对话。它是你说的所有内容和 Claude 响应的完整记录。
 
-1. 斜杠命令包含一个**系统提示词** — Claude 的详细指令
-2. 你在 Claude Code 中输入 `/command-name arguments`
-3. Claude 自动加载系统提示词并处理你的参数
+把它想象成笔记本：
+- 每次你启动 Claude Code，你打开一个**新笔记本**
+- 该对话中的所有内容都进入那个笔记本
+- 当你退出时，笔记本被保存
+- 下次你启动 Claude Code 时，你会获得一个**空白笔记本**（新会话）
 
-**重要提示：** 你不需要记住斜杠命令。当你输入 `/` 并开始输入时，Claude Code 会展示可用命令的列表。你可以用几个按键选择一个。
+这种分离是有用的，因为：
+1. **组织** — 每个项目/任务可以有自己的会话
+2. **隐私** — 会话彼此隔离
+3. **历史** — 你可以随时返回任何过去的会话
 
-## 用例子理解系统提示词
+## 理解会话持久性
 
-让我们看一个真实的例子。`convert-currency` 命令有一个系统提示词，教 Claude 如何在货币之间转换。
+默认情况下，Claude Code 的工作方式如下：
 
-你可以通过运行以下命令来查看它：
+**会话 1：**
+```
+                        我跟你说：我最喜欢的食物是披萨
+了解。
+
+                        我的最喜欢的食物是什么？
+你最喜欢的食物是披萨。
+（退出 Claude Code - 会话已保存）
+```
+
+**会话 2：**（新会话，全新开始）
+```
+                        我的最喜欢的食物是什么？
+我不知道你最喜欢的食物是什么。我们还没有讨论过。
+```
+
+Claude 在会话 2 期间对会话 1 没有记忆。这是有意的 — 每个会话都是独立的。但 Claude Code 保存每个会话。你可以使用会话命令稍后访问它们。
+
+## 会话命令
+
+Claude Code 提供两个命令来管理会话：
+
+### `-c` (Continue) — 继续上一个会话
 
 ```bash
-cat .claude/skills/convert-currency/SKILL.md
+claude -c
 ```
 
-这会显示完整的提示词，包括：
-- **元数据**（name、description、argument-hint）— 告诉 Claude Code 关于这个命令的信息
-- **系统提示词** — Claude 将遵循的实际指令
+这会**继续**你最后所在的会话。来自你之前对话的所有上下文都会回来。这就像打开你之前拥有的相同笔记本。
 
-它看起来像这样：
+### `-r` (Resume) — 从会话历史恢复
 
-```
----
-name: convert-currency
-description: Convert currency amounts between USD, EUR, GBP, CNY, and JPY using current exchange rates.
-argument-hint: "[amount] [from-currency] to [to-currency]"
----
-
-You are a currency conversion assistant. Your task is to convert currency amounts accurately...
+```bash
+claude -r
 ```
 
-## $ARGUMENTS 占位符
+这显示你所有过去会话的列表。你可以选择想要恢复的那个。这就像浏览你的笔记本集合并挑选你想打开的那个。
 
-任何系统提示词中的关键概念是 **$ARGUMENTS**。这是一个占位符，会被替换为你在命令后输入的内容。
+## 动手练习 1：理解会话隔离
 
-例如：
-- 命令：`/convert-currency How much is $180 USD in Euro?`
-- `$ARGUMENTS` 变成：`How much is $180 USD in Euro?`
+让我们通过体验隔离来学习会话如何工作。
 
-这就是同一个命令如何处理不同的用户输入的方式 — 提示词适应你传入的任何内容。
+**部分 A：在会话中创建上下文**
 
-## 动手练习：练习 1（手动方式）
+1. 正常启动 Claude Code：`claude`
+2. 告诉 Claude 你的偏好：`Let me tell you: my favorite food is cheese burger`
+3. 验证 Claude 是否记得：问 `What's my favorite food?`
+4. Claude 应该回答："Your favorite food is cheese burger"
 
-让我们先用手动的方式来理解发生了什么。
+**部分 B：退出并重新开始**
 
-复制下面的文本（系统提示词部分，不是元数据），粘贴到 Claude Code 中，带上你的问题。替换 `$ARGUMENTS` 为你的实际问题：
+5. 退出 Claude Code（Ctrl+C 两次）
+6. 正常重新启动 Claude Code：`claude`
+7. 问相同的问题：`What's my favorite food?`
+8. Claude 回应："I don't know what your favorite food is"
 
-```
-You are a currency conversion assistant. Your task is to convert currency amounts accurately using the provided exchange rates.
+**发生了什么？**
 
-## Exchange Rates (base currency: USD)
+你创建了两个独立的会话。会话 1 有你的食物偏好。会话 2 从头开始，没有上下文。信息没有丢失 — 它被存储了 — 但会话 2 看不到它，因为它们是分开的对话。
 
-- United States Dollar (USD): 1.00
-- Euro (EUR, official common currency of the Eurozone): 0.92
-- British Pound Sterling (GBP): 0.79
-- Chinese Yuan Renminbi (CNY): 7.22
-- Japanese Yen (JPY): 155.50
+这就是为什么管理会话很重要。没有工具来恢复或审查，你会丢失重要的上下文。
 
-## Instructions
+## 动手练习 2：使用 `-c` 恢复
 
-When the user asks: How much is $180 USD in Euro?
+现在让我们使用 `-c` 标志来继续一个之前的会话。
 
-1. Parse the amount and currencies from the user's request
-2. Convert the amount using the provided exchange rates:
-   - If converting FROM USD: multiply the amount by the target currency rate
-   - If converting TO USD: divide the amount by the source currency rate
-   - If converting between non-USD currencies: convert to USD first, then to the target currency
-3. Provide the result with clear formatting, showing:
-   - The original amount and currency
-   - The converted amount and currency
-   - The calculation used (optional, for transparency)
+**部分 A：创建一个有上下文的新会话**
 
-## Example
+1. 启动 Claude Code：`claude`
+2. 告诉 Claude 一些事情：`Let me tell you my favorite programming language is Python`
+3. 退出 Claude Code
 
-Input: "$763.45 USD to EUR"
-Output: $763.45 USD = 702.37 EUR (calculation: 763.45 × 0.92 = 702.374)
+**部分 B：使用 -c 恢复会话**
 
-Be precise with decimal places and round to 2 decimal places for currency amounts.
-```
+4. 运行：`claude -c`
+5. Claude Code 应该显示："Resuming session..."或类似的东西
+6. 问一个问题：`What programming language do I like?`
+7. Claude 回应："Your favorite programming language is Python"（记得了！）
 
-**你的任务：** 复制上面的内容，粘贴到 Claude Code 中，看看 Claude 如何转换货币。
+**发生了什么？**
 
-这就是斜杠命令幕后发生的事情 — 但你必须手动复制和粘贴。
+`-c` 标志恢复了你的最后一个会话。来自该对话的所有上下文都回来了。这就像重新打开同一个笔记本而不是获得一个新的。
 
-## 动手练习：练习 2（使用斜杠命令）
+## 动手练习 3：使用 `-r` 浏览会话
 
-现在体验斜杠命令的便利。
+现在让我们使用 `-r` 标志从多个过去的会话中选择。
 
-在 Claude Code 中，只需输入：
+**设置（如果你还没有做练习 1 和 2）：**
+- 确保你至少有 2 个有不同上下文的过去会话
+- 练习 1 有一个关于食物的会话
+- 练习 2 有一个关于编程语言的会话
 
-```
-/convert-currency How much is $180 USD in Euro?
-```
+**实践：**
 
-与练习 1 比较：
-- 练习 1：复制一大块文本，粘贴它，运行它（**很多工作**）
-- 练习 2：输入一个简短命令（**最小的工作量**）
+1. 退出 Claude Code（如果你在一个中）
+2. 运行：`claude -r`
+3. 你会看到过去会话的列表（带有时间戳或摘要）
+4. 选择你早期的一个会话（例如，关于食物或编程的那个）
+5. 你现在在该会话中 — 所有上下文都恢复了
+6. 问：`What did we discuss?`或引用你分享的信息
+7. Claude 记得来自该特定会话的上下文
 
-这就是斜杠命令的力量 — 相同的结果，一小部分工作量。
+**发生了什么？**
 
-## 斜杠命令如何在幕后工作
-
-当你输入 `/convert` 时，Claude Code：
-
-1. 搜索所有与"convert"匹配的可用命令
-2. 显示一个列表（在这个例子中，`/convert-currency`）
-3. 你选择它或完成完整的名称
-4. Claude 从 `.claude/skills/convert-currency/SKILL.md` 加载系统提示词
-5. 你的参数被插入到 `$ARGUMENTS` 出现的地方
-6. Claude 用完整的背景信息处理请求
-
-这就是为什么**你不需要记住命令名称**。开始输入，Claude Code 的自动完成会帮助你找到需要的内容。
-
-## 为什么我们先从简单开始
-
-你可能听说过 Claude Code 中的术语"Skills"。这是这个系统的全部力量。但斜杠命令只是 Skills 能做事情的 10%。现在，把它们想象成方便的提示词快捷方式。
-
-以后，我们将探索：
-- 创建自定义 skills
-- 构建复杂的工作流
-- 与工具和 API 集成
-
-但今天，重点是理解：斜杠命令 = 更快访问你最喜欢的提示词。
+`-r` 标志让你浏览整个会话历史，并选择想要恢复的那个。当你有许多对话并想继续一个特定的对话而不仅仅是最新的对话时，这非常强大。
 
 ## 快速参考
 
-- **自动完成：** 输入 `/` 查看可用命令；你不需要记住它们
-- **语法：** `/command-name arguments`
-- **查看一个 skill：** `cat .claude/skills/[skill-name]/SKILL.md`
-- **概念：** 斜杠命令 = 提示词模板 + 快速访问
-- **好处：** 用最少的输入执行复杂的工作流
+- **新会话：** `claude`（默认行为）
+- **继续最后一个会话：** `claude -c`
+- **浏览并选择一个会话：** `claude -r`
+- **会话存储：** 会话会自动保存；你不需要做任何事情
+- **上下文隔离：** 每个会话从头开始，除非你恢复
+- **`-c` 的替代：** `/clear` 清除当前会话的上下文，但不会创建新的会话文件
 
-## 导师的话：自动化重复的工作流
+## 常见场景
 
-在我职业生涯的早期，我会一遍遍写同样的指令。"这是我想让你分析代码的方式……"或"请用汇率转换这个……"
+**场景 1：你在处理一个项目，想明天回到它**
 
-重复很乏味，但更糟的是，它容易出错。我会忘记细节、打错字或短语的方式略有不同。
+使用 `claude -c` 恢复你离开的地方。你的所有上下文都在那里。
 
-一旦我意识到我可以自动化这些工作流，一切都改变了。我不再在输入指令和等待响应之间切换上下文，而是可以专注于实际的任务。
+**场景 2：你进行了许多对话，不记得哪一个有重要信息**
 
-这是好工程的核心原则：**自动化重复的东西**。斜杠命令是实践这一点的简单方式 — 这个习惯会转移到你构建的一切。
+使用 `claude -r` 浏览会话并找到你需要的那个。
+
+**场景 3：你想完全从头开始，没有之前的上下文，但保持旧的会话保存**
+
+只需正常启动 Claude Code 用 `claude`。一个新会话被创建，你的旧会话被保留以供以后使用。
+
+## 导师的话：组织你的想法
+
+在我职业生涯的早期，我会丢失重要对话。"等等，我在哪个会话中讨论过架构？"或"我们同意的要求是什么？"
+
+我学到会话管理就像对话的项目管理。每个专注的对话都有自己的会话。当你回到它时，一切都在那里。
+
+真正的技能是知道何时启动新会话。这是我的模式：
+- **为每个项目/任务启动新会话** — 不同的目标值得不同的笔记本
+- **不要在任务中途切换会话** — 在启动新会话之前完成你的当前会话
+- **当卡住时审查旧会话** — 看看你如何解决类似的问题
+
+随着时间推移，你的会话历史变成一个个人知识库。你可以追踪你的想法、看看你如何接近问题，甚至从错误中学到东西。
 
 ## 进一步阅读
 
-- [Claude Code Skills 文档](https://code.claude.com/docs/en/skills)
-- [提示工程最佳实践](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
+- [Claude Code 文档](https://code.claude.com/docs)
+- [工作流最佳实践](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)

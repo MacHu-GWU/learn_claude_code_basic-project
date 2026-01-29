@@ -1,165 +1,182 @@
-# Using Slash Commands
+# Managing Sessions
 
-> Learn how slash commands let you quickly execute pre-built prompt templates without typing long instructions every time.
+> Learn how Claude Code sessions work and how to manage conversation history across multiple conversations.
 
 ## Why This Matters
 
-Imagine you frequently need to do the same task — convert currencies, review code, write documentation, or analyze data. Each time, you'd need to paste the same detailed instructions to Claude Code.
+Imagine you're working on a project and chatting with Claude Code about it. You share context — file paths, requirements, your preferences. Claude understands everything.
 
-What if you could just type a quick command and Claude would automatically use the right prompt?
+Then you close Claude Code and come back tomorrow. You ask Claude the same question... and it has no idea what you were talking about.
 
-That's what slash commands do. They're like shortcuts for your most common workflows — saving you time and reducing repetition.
+This isn't a bug — it's how sessions work. Each time you start Claude Code, you get a fresh conversation. That's good for keeping things organized, but what if you want to continue a previous conversation or review what you discussed before?
 
-## What Are Slash Commands?
+That's where session management comes in. Claude Code lets you:
+- **Resume** a previous session (continue where you left off)
+- **Browse** past sessions (find and replay old conversations)
+- **Keep organized** conversation history
 
-Think of a slash command as a **prompt template shortcut**. It's a quick way to inject pre-written system prompts without typing them manually.
+## What Are Sessions?
 
-Here's the basic idea:
+A **session** is a single conversation with Claude Code. It's a complete record of everything you said and everything Claude responded with.
 
-1. A slash command contains a **system prompt** — detailed instructions for Claude
-2. You type `/command-name arguments` in Claude Code
-3. Claude automatically loads the system prompt and processes your arguments
+Think of it like notebooks:
+- Each time you start Claude Code, you open a **new notebook**
+- Everything in that conversation goes in that notebook
+- When you exit, the notebook is saved
+- Next time you start Claude Code, you get a **blank notebook** (new session)
 
-**Important:** You don't need to memorize slash commands. When you type `/` and start typing, Claude Code shows you a list of available commands. You can select one with just a few keystrokes.
+This separation is useful because:
+1. **Organization** — Each project/task can have its own session
+2. **Privacy** — Sessions are isolated from each other
+3. **History** — You can go back to any past session anytime
 
-## Understanding System Prompts with an Example
+## Understanding Session Persistence
 
-Let's look at a real example. The `convert-currency` command has a system prompt that teaches Claude how to convert between currencies.
+By default, Claude Code works like this:
 
-You can view it by running:
+**Session 1:**
+```
+                        Let me tell you: my favorite food is pizza
+Got it.
+
+                        What's my favorite food?
+Your favorite food is pizza.
+(Exit Claude Code - Session saved)
+```
+
+**Session 2:** (New session, fresh start)
+```
+                        What's my favorite food?
+I don't know what your favorite food is. We haven't discussed this.
+```
+
+Claude has no memory of Session 1 during Session 2. This is intentional — each session is independent. But Claude Code saves every session. You can access them later using session commands.
+
+## Session Commands
+
+Claude Code provides two commands to manage sessions:
+
+### `-c` — Continue Previous Session
 
 ```bash
-cat .claude/skills/convert-currency/SKILL.md
+claude -c
 ```
 
-This shows you the entire prompt, which includes:
-- **Metadata** (name, description, argument-hint) — tells Claude Code about the command
-- **System prompt** — the actual instructions Claude will follow
+This **continues** the last session you were in. All the context from your previous conversation comes back. It's like opening the same notebook you had before.
 
-Here's what it looks like:
+### `-r` — Resume from Session History
 
-```
----
-name: convert-currency
-description: Convert currency amounts between USD, EUR, GBP, CNY, and JPY using current exchange rates.
-argument-hint: "[amount] [from-currency] to [to-currency]"
----
-
-You are a currency conversion assistant. Your task is to convert currency amounts accurately...
+```bash
+claude -r
 ```
 
-## The $ARGUMENTS Placeholder
+This shows you a list of all your past sessions. You can pick which one you want to resume. It's like browsing your notebook collection and picking the one you want to open.
 
-The key concept in any system prompt is **$ARGUMENTS**. This is a placeholder that gets replaced with whatever you type after the command.
+## Hands-on Exercise 1: Understanding Session Isolation
 
-For example:
-- Command: `/convert-currency How much is $180 USD in Euro?`
-- `$ARGUMENTS` becomes: `How much is $180 USD in Euro?`
+Let's learn how sessions work by experiencing the isolation.
 
-This is how the same command can handle different user inputs — the prompt adapts to whatever you pass in.
+**Part A: Create context in a session**
 
-## Hands-on Exercise: Practice 1 (Manual Way)
+1. Start Claude Code normally: `claude`
+2. Tell Claude about your preferences: `Let me tell you: my favorite food is cheese burger`
+3. Verify Claude remembers: Ask `What's my favorite food?`
+4. Claude should answer: "Your favorite food is cheese burger"
 
-Let's first do this the long way to understand what's happening.
+**Part B: Exit and start fresh**
 
-Copy the text below (the system prompt part, NOT the metadata) and paste it into Claude Code with your question. Replace `$ARGUMENTS` with your actual question:
+5. Exit Claude Code (Ctrl+C twice)
+6. Start Claude Code again normally: `claude`
+7. Ask the same question: `What's my favorite food?`
+8. Claude responds: "I don't know what your favorite food is"
 
-```
-You are a currency conversion assistant. Your task is to convert currency amounts accurately using the provided exchange rates.
+**What happened?**
 
-## Exchange Rates (base currency: USD)
+You created two separate sessions. Session 1 had your food preference. Session 2 started fresh with no context. The information wasn't lost — it's stored — but Session 2 can't see it because they're separate conversations.
 
-- United States Dollar (USD): 1.00
-- Euro (EUR, official common currency of the Eurozone): 0.92
-- British Pound Sterling (GBP): 0.79
-- Chinese Yuan Renminbi (CNY): 7.22
-- Japanese Yen (JPY): 155.50
+This is why managing sessions matters. Without tools to resume or review, you'd lose important context.
 
-## Instructions
+## Hands-on Exercise 2: Resuming with `-c`
 
-When the user asks: How much is $180 USD in Euro?
+Now let's use the `-c` flag to continue a previous session.
 
-1. Parse the amount and currencies from the user's request
-2. Convert the amount using the provided exchange rates:
-   - If converting FROM USD: multiply the amount by the target currency rate
-   - If converting TO USD: divide the amount by the source currency rate
-   - If converting between non-USD currencies: convert to USD first, then to the target currency
-3. Provide the result with clear formatting, showing:
-   - The original amount and currency
-   - The converted amount and currency
-   - The calculation used (optional, for transparency)
+**Part A: Create a new session with context**
 
-## Example
+1. Start Claude Code: `claude`
+2. Tell Claude something: `Let me tell you my favorite programming language is Python`
+3. Exit Claude Code
 
-Input: "$763.45 USD to EUR"
-Output: $763.45 USD = 702.37 EUR (calculation: 763.45 × 0.92 = 702.374)
+**Part B: Resume the session with -c**
 
-Be precise with decimal places and round to 2 decimal places for currency amounts.
-```
+4. Run: `claude -c`
+5. Claude Code should show: "Resuming session..." or similar
+6. Ask a question: `What programming language do I like?`
+7. Claude responds: "Your favorite programming language is Python" (remembers!)
 
-**Your task:** Copy the above, paste into Claude Code, and see how Claude converts the currency.
+**What happened?**
 
-This is what happens behind the scenes with slash commands — but you had to copy and paste manually.
+The `-c` flag resumed your last session. All the context from that conversation came back. It's like reopening the same notebook instead of getting a new one.
 
-## Hands-on Exercise: Practice 2 (Using Slash Command)
+## Hands-on Exercise 3: Browsing Sessions with `-r`
 
-Now experience the convenience of a slash command.
+Now let's use the `-r` flag to select from multiple past sessions.
 
-In Claude Code, simply type:
+**Setup (if you haven't done Exercises 1 & 2):**
+- Make sure you have at least 2 past sessions with different context
+- Exercise 1 has one session about food
+- Exercise 2 has one session about programming languages
 
-```
-/convert-currency How much is $180 USD in Euro?
-```
+**The Practice:**
 
-Compare this to Practice 1:
-- Practice 1: Copy a large block of text, paste it, run it (**lots of work**)
-- Practice 2: Type a short command (**minimal effort**)
+1. Exit Claude Code (if you're in one)
+2. Run: `claude -r`
+3. You'll see a list of past sessions (with timestamps or summaries)
+4. Select one of your earlier sessions (e.g., the one about food or programming)
+5. You're now in that session — all context restored
+6. Ask: `What did we discuss?` or reference the information you shared
+7. Claude remembers the context from that specific session
 
-That's the power of slash commands — same result, fraction of the effort.
+**What happened?**
 
-## How Slash Commands Work Behind the Scenes
-
-When you type `/convert`, Claude Code:
-
-1. Searches for all available commands matching "convert"
-2. Shows you a list (in this case, `/convert-currency`)
-3. You select it or finish typing the full name
-4. Claude loads the system prompt from `.claude/skills/convert-currency/SKILL.md`
-5. Your arguments get inserted where `$ARGUMENTS` appears
-6. Claude processes the request with the complete context
-
-This is why **you don't need to memorize command names**. Start typing and Claude Code's autocomplete helps you find what you need.
-
-## Why We're Starting Simple
-
-You might have heard the term "Skills" in Claude Code. That's the full power of this system. But slash commands are just 10% of what Skills can do. For now, think of them as convenient prompt shortcuts.
-
-Later, we'll explore:
-- Creating custom skills
-- Building complex workflows
-- Integrating with tools and APIs
-
-But for today, focus on understanding: slash commands = faster access to your favorite prompts.
+The `-r` flag let you browse your entire session history and pick which one to resume. This is powerful when you have many conversations and want to continue a specific one, not just the most recent.
 
 ## Quick Reference
 
-- **Autocomplete:** Type `/` to see available commands; you don't need to memorize them
-- **Syntax:** `/command-name arguments`
-- **View a skill:** `cat .claude/skills/[skill-name]/SKILL.md`
-- **Concept:** Slash commands = prompt templates + quick access
-- **Benefit:** Execute complex workflows with minimal typing
+- **New session:** `claude` (default behavior)
+- **Continue last session:** `claude -c`
+- **Browse and pick a session:** `claude -r`
+- **Session storage:** Sessions are automatically saved; you don't need to do anything
+- **Context isolation:** Each session starts fresh unless you resume
+- **Alternative to -c:** `/clear` clears the current session's context but doesn't create a new session file
 
-## Mentor's Note: Automating Repetitive Workflows
+## Common Scenarios
 
-Early in my career, I'd write the same instructions over and over. "Here's how I want you to analyze code..." or "Please convert this using exchange rates..."
+**Scenario 1: You're working on a project and want to come back to it tomorrow**
 
-The repetition was tedious, but worse, it was error-prone. I'd forget details, make typos, or phrase things slightly differently each time.
+Use `claude -c` to resume where you left off. All your context is there.
 
-Once I realized I could automate these workflows, everything changed. Instead of context-switching between typing instructions and waiting for responses, I could focus on the actual task.
+**Scenario 2: You've had many conversations and can't remember which one had important information**
 
-This is a core principle of good engineering: **automate what repeats**. Slash commands are a simple way to practice this — and the habit transfers to everything you build.
+Use `claude -r` to browse sessions and find the one you need.
+
+**Scenario 3: You want to start completely fresh without the previous context, but keep the old session saved**
+
+Just start Claude Code normally with `claude`. A new session is created, and your old one is preserved for later.
+
+## Mentor's Note: Organizing Your Thinking
+
+Early in my career, I'd lose important conversations. "Wait, which session did I discuss the architecture in?" or "What were the requirements we agreed on?"
+
+I learned that session management is like project management for your conversations. Each focused conversation gets its own session. When you come back to it, everything is there.
+
+The real skill is knowing when to start a new session. Here's my pattern:
+- **New session for each project/task** — Different goals deserve different notebooks
+- **Don't switch sessions mid-task** — Finish your current session before starting a new one
+- **Review old sessions when stuck** — Look back at how you solved similar problems
+
+Over time, your session history becomes a personal knowledge base. You can trace your thinking, see how you approach problems, and even learn from mistakes.
 
 ## Further Reading
 
-- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
-- [Prompt Engineering Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
+- [Claude Code Documentation](https://code.claude.com/docs)
+- [Workflow Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
