@@ -1,139 +1,165 @@
-# 编辑长消息
+# 使用斜杠命令
 
-> 学习如何使用 markdown 文件而不是聊天输入框来高效地撰写和编辑长消息。
+> 学习如何使用斜杠命令快速执行预先构建的提示词模板，而不是每次都输入冗长的指令。
 
 ## 为什么这很重要
 
-想象你在处理一个复杂的任务。你需要给 Claude Code 写一个详细的提示词 — 也许需要引用多个文件、解释上下文或列出多个要求。你开始在聊天输入框中输入...
+想象你经常需要做同样的任务 — 转换货币、审查代码、编写文档或分析数据。每一次，你都需要粘贴同样的详细指令到 Claude Code 中。
 
-然后你意识到你在三行上面打错了一个字。或者你想重新组织你的想法。或者你意外地按了 Enter 键并发送了一条不完整的消息。
+如果你只需要打一个快速命令，Claude 就自动使用正确的提示词，会怎样呢？
 
-聊天输入框很适合快速提问，但对于编写更长、更深思熟虑的提示词来说很糟糕。没有简单的方法来滚动、编辑或组织你的想法。
+这正是斜杠命令做的事情。它们像是你最常见工作流的快捷方式 — 节省时间并减少重复。
 
-解决方案？先在 markdown 文件中写下你的消息，然后复制粘贴到 Claude Code 中。这样你就能获得编辑器的全部功能 — 语法高亮、简单导航、撤销/重做，以及保存提示词以供参考的能力。
+## 什么是斜杠命令？
 
-## 消息文件方法
+把斜杠命令想象成一个**提示词模板快捷方式**。它是一种快速注入预先编写的系统提示词而无需手动输入的方式。
 
-不要直接在 Claude Code 中输入，而是在项目中创建一个名为 `.claude/claude-code-messages.md` 的文件。这个文件是你的"起草空间"用来撰写提示词。
+基本思想是：
 
-该文件从 git 中被排除（通过 `.gitignore`），所以它不会散落在你的版本库中。它纯粹是为了你的便利。
+1. 斜杠命令包含一个**系统提示词** — Claude 的详细指令
+2. 你在 Claude Code 中输入 `/command-name arguments`
+3. Claude 自动加载系统提示词并处理你的参数
 
-它的工作原理如下：
+**重要提示：** 你不需要记住斜杠命令。当你输入 `/` 并开始输入时，Claude Code 会展示可用命令的列表。你可以用几个按键选择一个。
 
-1. 在文件中写下你的消息
-2. 复制消息
-3. 粘贴到 Claude Code 中
-4. Claude 做出回应
-5. 当你有另一条消息时，在文件中写下并重复
+## 用例子理解系统提示词
 
-你可以用水平线（`----`）分隔消息来保持提示词历史。这为你创建了一个个人日志，记录你问过的内容，对于参考很有帮助。
+让我们看一个真实的例子。`convert-currency` 命令有一个系统提示词，教 Claude 如何在货币之间转换。
 
-## 从上到下写
+你可以通过运行以下命令来查看它：
 
-这是一个能节省时间的实用技巧：**在文件的顶部写新消息**。
-
-为什么？当你在大多数编辑器中打开一个文件时，光标会从顶部开始。如果你把最新的消息放在顶部，你可以快速看到你最后问过的内容而无需滚动。你的对话历史读起来很自然 — 最新的在前，最旧的在后。
-
-你的文件结构应该看起来像这样：
-
-```markdown
-------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------
-(你的最新消息在这里 - 在这一行上方写新消息)
-------------------------------------------------------------------------------
-(较新的消息)
-------------------------------------------------------------------------------
-(较旧的消息)
-------------------------------------------------------------------------------
+```bash
+cat .claude/skills/convert-currency/SKILL.md
 ```
 
-## 在消息中引用文件
+这会显示完整的提示词，包括：
+- **元数据**（name、description、argument-hint）— 告诉 Claude Code 关于这个命令的信息
+- **系统提示词** — Claude 将遵循的实际指令
 
-使用消息文件的最常见原因之一是当你需要在项目中引用特定文件时。
-
-当你告诉 Claude Code 查看一个文件时，你应该使用**绝对路径** — 从文件系统根目录的完整路径。这样可以消除对你要引用哪个文件的任何歧义。
-
-在 GitHub Codespaces 或 VS Code 中，获取绝对路径很简单：
-
-1. 在资源管理器面板（左侧边栏）中找到文件
-2. 右键单击文件名
-3. 选择"Copy Path"（不是"Copy Relative Path"）
-
-你会得到类似这样的内容：
+它看起来像这样：
 
 ```
-/workspaces/my-project/src/config.json
+---
+name: convert-currency
+description: Convert currency amounts between USD, EUR, GBP, CNY, and JPY using current exchange rates.
+argument-hint: "[amount] [from-currency] to [to-currency]"
+---
+
+You are a currency conversion assistant. Your task is to convert currency amounts accurately...
 ```
 
-然后在你的消息中，你可以写：
+## $ARGUMENTS 占位符
+
+任何系统提示词中的关键概念是 **$ARGUMENTS**。这是一个占位符，会被替换为你在命令后输入的内容。
+
+例如：
+- 命令：`/convert-currency How much is $180 USD in Euro?`
+- `$ARGUMENTS` 变成：`How much is $180 USD in Euro?`
+
+这就是同一个命令如何处理不同的用户输入的方式 — 提示词适应你传入的任何内容。
+
+## 动手练习：练习 1（手动方式）
+
+让我们先用手动的方式来理解发生了什么。
+
+复制下面的文本（系统提示词部分，不是元数据），粘贴到 Claude Code 中，带上你的问题。替换 `$ARGUMENTS` 为你的实际问题：
 
 ```
-请查看 /workspaces/my-project/src/config.json 中的配置
-并提出改进建议。
+You are a currency conversion assistant. Your task is to convert currency amounts accurately using the provided exchange rates.
+
+## Exchange Rates (base currency: USD)
+
+- United States Dollar (USD): 1.00
+- Euro (EUR, official common currency of the Eurozone): 0.92
+- British Pound Sterling (GBP): 0.79
+- Chinese Yuan Renminbi (CNY): 7.22
+- Japanese Yen (JPY): 155.50
+
+## Instructions
+
+When the user asks: How much is $180 USD in Euro?
+
+1. Parse the amount and currencies from the user's request
+2. Convert the amount using the provided exchange rates:
+   - If converting FROM USD: multiply the amount by the target currency rate
+   - If converting TO USD: divide the amount by the source currency rate
+   - If converting between non-USD currencies: convert to USD first, then to the target currency
+3. Provide the result with clear formatting, showing:
+   - The original amount and currency
+   - The converted amount and currency
+   - The calculation used (optional, for transparency)
+
+## Example
+
+Input: "$763.45 USD to EUR"
+Output: $763.45 USD = 702.37 EUR (calculation: 763.45 × 0.92 = 702.374)
+
+Be precise with decimal places and round to 2 decimal places for currency amounts.
 ```
 
-这比在小的聊天输入框中做这件事要容易得多，因为你可以看到你在输入什么。
+**你的任务：** 复制上面的内容，粘贴到 Claude Code 中，看看 Claude 如何转换货币。
 
-## 清除聊天输入
+这就是斜杠命令幕后发生的事情 — 但你必须手动复制和粘贴。
 
-有时你开始在 Claude Code 的聊天输入框中输入并想重新开始。以下是你需要了解的内容：
+## 动手练习：练习 2（使用斜杠命令）
 
-- 按 **Ctrl+C 一次**清除当前输入
-- 按 **Ctrl+C 两次**完全退出 Claude Code
+现在体验斜杠命令的便利。
 
-当你粘贴了某些内容并想清除它，或者当你改变了主意想问什么时，这很有用。
-
-## 动手练习
-
-让我们练习你学到的东西。
-
-**你的任务：**使用消息文件提出一个关于 Claude Code 的问题。
-
-首先，在编辑器中打开 `.claude/claude-code-messages-example.md`。你会看到它在底部已经有一个示例消息：
+在 Claude Code 中，只需输入：
 
 ```
-Help me understand what I need to know from README.md
+/convert-currency How much is $180 USD in Euro?
 ```
 
-复制这一行并粘贴到 Claude Code 中。观看 Claude 如何读取 README 并为你总结关键点。
+与练习 1 比较：
+- 练习 1：复制一大块文本，粘贴它，运行它（**很多工作**）
+- 练习 2：输入一个简短命令（**最小的工作量**）
 
-现在尝试在文件中写下你自己的消息。在底部添加一个新部分（在 `----` 行下方）并写下关于该项目中任何文件的问题。复制并粘贴到 Claude Code 中。
+这就是斜杠命令的力量 — 相同的结果，一小部分工作量。
 
-## 常见问题
+## 斜杠命令如何在幕后工作
 
-**意外发送了不完整的消息**
+当你输入 `/convert` 时，Claude Code：
 
-这正是我们使用消息文件方法的原因。如果你先在文件中撰写，你可以在发送前进行审阅和编辑。现在，只需继续对话 — Claude 如果你添加更多上下文会理解。
+1. 搜索所有与"convert"匹配的可用命令
+2. 显示一个列表（在这个例子中，`/convert-currency`）
+3. 你选择它或完成完整的名称
+4. Claude 从 `.claude/skills/convert-currency/SKILL.md` 加载系统提示词
+5. 你的参数被插入到 `$ARGUMENTS` 出现的地方
+6. Claude 用完整的背景信息处理请求
 
-**不确定使用哪个路径**
+这就是为什么**你不需要记住命令名称**。开始输入，Claude Code 的自动完成会帮助你找到需要的内容。
 
-总是使用"Copy Path"（绝对路径），而不是"Copy Relative Path"。绝对路径从根目录（`/`）开始，包括完整的目录结构。
+## 为什么我们先从简单开始
 
-**文件更改未反映**
+你可能听说过 Claude Code 中的术语"Skills"。这是这个系统的全部力量。但斜杠命令只是 Skills 能做事情的 10%。现在，把它们想象成方便的提示词快捷方式。
 
-确保在复制前保存文件。大多数编辑器在标签页中显示未保存指示（如点号）。
+以后，我们将探索：
+- 创建自定义 skills
+- 构建复杂的工作流
+- 与工具和 API 集成
 
-## 导师的话：深思熟虑的沟通
-
-当我第一次开始使用 AI 助手时，我会以意识流风格输入问题 — 只是大声思考。结果时好时坏。
-
-随着时间的推移，我了解到 AI 响应的质量直接与提示词的质量相关。花一刻钟来组织你的想法、组织你的请求并提供清晰的背景会产生巨大的差异。
-
-消息文件方法不仅仅是为了方便 — 它是关于建立深思熟虑沟通的习惯。这项技能可以转移到任何地方：写电子邮件、文档、代码注释，甚至与同事的对话。
-
-你花在组织想法上的几秒钟往往会节省几分钟的来回澄清。
+但今天，重点是理解：斜杠命令 = 更快访问你最喜欢的提示词。
 
 ## 快速参考
 
-- 消息文件位置：`.claude/claude-code-messages.md`
-- 消息之间的分隔符：`----`（水平线）
-- 复制文件路径：在 VS Code/Codespaces 中右键单击 → "Copy Path"
-- 清除聊天输入：Ctrl+C（一次清除，两次退出）
-- 在文件的顶部写新消息
+- **自动完成：** 输入 `/` 查看可用命令；你不需要记住它们
+- **语法：** `/command-name arguments`
+- **查看一个 skill：** `cat .claude/skills/[skill-name]/SKILL.md`
+- **概念：** 斜杠命令 = 提示词模板 + 快速访问
+- **好处：** 用最少的输入执行复杂的工作流
+
+## 导师的话：自动化重复的工作流
+
+在我职业生涯的早期，我会一遍遍写同样的指令。"这是我想让你分析代码的方式……"或"请用汇率转换这个……"
+
+重复很乏味，但更糟的是，它容易出错。我会忘记细节、打错字或短语的方式略有不同。
+
+一旦我意识到我可以自动化这些工作流，一切都改变了。我不再在输入指令和等待响应之间切换上下文，而是可以专注于实际的任务。
+
+这是好工程的核心原则：**自动化重复的东西**。斜杠命令是实践这一点的简单方式 — 这个习惯会转移到你构建的一切。
 
 ## 进一步阅读
 
+- [Claude Code Skills 文档](https://code.claude.com/docs/en/skills)
 - [提示工程最佳实践](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)

@@ -1,25 +1,34 @@
-# Learn to Edit Long Messages
+# Learn to Use Slash Commands
 
 ## Objective
 
-Learn how to compose and edit long messages efficiently using a markdown file instead of typing directly in the chat input box.
+Learn how slash commands let you quickly execute pre-built prompt templates without typing long instructions every time. Understand that slash commands are autocompleted shortcuts for prompt templates.
 
-Read the tutorial: [Editing Long Messages](https://github.com/MacHu-GWU/learn_claude_code_basic-project/tree/03-editing-messages/)
+Read the tutorial: [Using Slash Commands](https://github.com/MacHu-GWU/learn_claude_code_basic-project/tree/04-using-slash-commands/)
 
 ## Actionable Items
 
-1. Read the tutorial in README.md
-2. Open `.claude/claude-code-messages-example.md` in your editor
-3. Copy the sample message at the bottom and paste it into Claude Code
-4. Observe how Claude responds to your message
-5. Try adding your own message to the file and sending it
+1. Read the tutorial in `04-using-slash-commands.md`
+2. View the system prompt: `cat .claude/skills/convert-currency/SKILL.md`
+3. **Practice 1 (Manual):** Copy the system prompt from the tutorial, replace `$ARGUMENTS` with "How much is $180 USD in Euro?", and paste into Claude Code
+4. **Practice 2 (Slash Command):** Type `/convert-currency How much is $180 USD in Euro?` into Claude Code
+5. Compare the two approaches — notice how slash commands reduce typing
 6. Leave a comment on this ticket to let your mentor know you've completed it
 
-**Estimated time:** 5-10 minutes
+**Estimated time:** 10-15 minutes
+
+## Key Concepts to Understand
+
+- Slash commands are **shortcuts for prompt templates**
+- You don't need to memorize command names — use autocomplete (type `/` and search)
+- The `$ARGUMENTS` placeholder gets replaced with your input
+- This is 10% of what Skills can do; we'll explore more advanced features later
 
 ## Checklist
 
-- [ ] **Read tutorial** - Finished reading the README.md
-- [ ] **Use example file** - Successfully copied a message from the example file and sent it to Claude Code
-- [ ] **Understand the workflow** - Know how to use the message file to compose prompts
+- [ ] **Read tutorial** - Finished reading the 04-using-slash-commands.md
+- [ ] **View skill file** - Ran `cat .claude/skills/convert-currency/SKILL.md` and saw the system prompt
+- [ ] **Practice 1 (Manual)** - Copied the system prompt and manually sent a currency conversion request to Claude Code
+- [ ] **Practice 2 (Slash Command)** - Used `/convert-currency` command and compared it with Practice 1
+- [ ] **Understand the benefit** - Know why slash commands are faster than typing full prompts
 - [ ] **Notify mentor** - Left a comment saying "Done" or describing what you learned

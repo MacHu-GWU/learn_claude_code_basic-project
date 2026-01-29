@@ -1,139 +1,165 @@
-# Editing Long Messages
+# Using Slash Commands
 
-> Learn how to compose and edit long messages efficiently using a markdown file instead of the chat input box.
+> Learn how slash commands let you quickly execute pre-built prompt templates without typing long instructions every time.
 
 ## Why This Matters
 
-Imagine you're working on a complex task. You need to write a detailed prompt to Claude Code — maybe referencing multiple files, explaining context, or listing several requirements. You start typing in the chat input box...
+Imagine you frequently need to do the same task — convert currencies, review code, write documentation, or analyze data. Each time, you'd need to paste the same detailed instructions to Claude Code.
 
-Then you realize you made a typo three lines up. Or you want to reorganize your thoughts. Or you accidentally pressed Enter and sent an incomplete message.
+What if you could just type a quick command and Claude would automatically use the right prompt?
 
-The chat input box is great for quick questions, but it's terrible for composing longer, thoughtful prompts. There's no easy way to scroll, edit, or organize your thoughts.
+That's what slash commands do. They're like shortcuts for your most common workflows — saving you time and reducing repetition.
 
-The solution? Write your messages in a markdown file first, then copy and paste into Claude Code. This gives you the full power of your editor — syntax highlighting, easy navigation, undo/redo, and the ability to save your prompts for reference.
+## What Are Slash Commands?
 
-## The Message File Approach
+Think of a slash command as a **prompt template shortcut**. It's a quick way to inject pre-written system prompts without typing them manually.
 
-Instead of typing directly in Claude Code, create a file called `.claude/claude-code-messages.md` in your project. This file serves as your "drafting space" for prompts.
+Here's the basic idea:
 
-The file is excluded from git (via `.gitignore`), so it won't clutter your repository. It's purely for your convenience.
+1. A slash command contains a **system prompt** — detailed instructions for Claude
+2. You type `/command-name arguments` in Claude Code
+3. Claude automatically loads the system prompt and processes your arguments
 
-Here's how it works:
+**Important:** You don't need to memorize slash commands. When you type `/` and start typing, Claude Code shows you a list of available commands. You can select one with just a few keystrokes.
 
-1. Write your message in the file
-2. Copy the message
-3. Paste it into Claude Code
-4. Claude responds
-5. When you have another message, write it in the file and repeat
+## Understanding System Prompts with an Example
 
-You can keep a history of your prompts by separating them with horizontal lines (`----`). This creates a personal log of what you've asked, which can be helpful for reference.
+Let's look at a real example. The `convert-currency` command has a system prompt that teaches Claude how to convert between currencies.
 
-## Writing from Top to Bottom
+You can view it by running:
 
-Here's a practical tip that will save you time: **write new messages at the top of the file**.
-
-Why? When you open a file in most editors, the cursor starts at the top. If you keep your latest message at the top, you can quickly see what you last asked without scrolling. Your conversation history reads naturally — newest first, oldest last.
-
-Your file structure should look like this:
-
-```markdown
-------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------
-(your latest message here - write new ones above this line)
-------------------------------------------------------------------------------
-(newer message here)
-------------------------------------------------------------------------------
-(older message here)
-------------------------------------------------------------------------------
+```bash
+cat .claude/skills/convert-currency/SKILL.md
 ```
 
-## Referencing Files in Your Messages
+This shows you the entire prompt, which includes:
+- **Metadata** (name, description, argument-hint) — tells Claude Code about the command
+- **System prompt** — the actual instructions Claude will follow
 
-One of the most common reasons to use the message file is when you need to reference specific files in your project.
-
-When you tell Claude Code to look at a file, you should use the **absolute path** — the full path from the root of your filesystem. This removes any ambiguity about which file you mean.
-
-In GitHub Codespaces or VS Code, getting the absolute path is easy:
-
-1. Find the file in the Explorer panel (left sidebar)
-2. Right-click on the file name
-3. Select "Copy Path" (not "Copy Relative Path")
-
-You'll get something like:
+Here's what it looks like:
 
 ```
-/workspaces/my-project/src/config.json
+---
+name: convert-currency
+description: Convert currency amounts between USD, EUR, GBP, CNY, and JPY using current exchange rates.
+argument-hint: "[amount] [from-currency] to [to-currency]"
+---
+
+You are a currency conversion assistant. Your task is to convert currency amounts accurately...
 ```
 
-Then in your message, you can write:
+## The $ARGUMENTS Placeholder
+
+The key concept in any system prompt is **$ARGUMENTS**. This is a placeholder that gets replaced with whatever you type after the command.
+
+For example:
+- Command: `/convert-currency How much is $180 USD in Euro?`
+- `$ARGUMENTS` becomes: `How much is $180 USD in Euro?`
+
+This is how the same command can handle different user inputs — the prompt adapts to whatever you pass in.
+
+## Hands-on Exercise: Practice 1 (Manual Way)
+
+Let's first do this the long way to understand what's happening.
+
+Copy the text below (the system prompt part, NOT the metadata) and paste it into Claude Code with your question. Replace `$ARGUMENTS` with your actual question:
 
 ```
-Please review the configuration in /workspaces/my-project/src/config.json
-and suggest improvements.
+You are a currency conversion assistant. Your task is to convert currency amounts accurately using the provided exchange rates.
+
+## Exchange Rates (base currency: USD)
+
+- United States Dollar (USD): 1.00
+- Euro (EUR, official common currency of the Eurozone): 0.92
+- British Pound Sterling (GBP): 0.79
+- Chinese Yuan Renminbi (CNY): 7.22
+- Japanese Yen (JPY): 155.50
+
+## Instructions
+
+When the user asks: How much is $180 USD in Euro?
+
+1. Parse the amount and currencies from the user's request
+2. Convert the amount using the provided exchange rates:
+   - If converting FROM USD: multiply the amount by the target currency rate
+   - If converting TO USD: divide the amount by the source currency rate
+   - If converting between non-USD currencies: convert to USD first, then to the target currency
+3. Provide the result with clear formatting, showing:
+   - The original amount and currency
+   - The converted amount and currency
+   - The calculation used (optional, for transparency)
+
+## Example
+
+Input: "$763.45 USD to EUR"
+Output: $763.45 USD = 702.37 EUR (calculation: 763.45 × 0.92 = 702.374)
+
+Be precise with decimal places and round to 2 decimal places for currency amounts.
 ```
 
-This is much easier to do in a file editor where you can see what you're typing, rather than in a small chat input box.
+**Your task:** Copy the above, paste into Claude Code, and see how Claude converts the currency.
 
-## Clearing the Chat Input
+This is what happens behind the scenes with slash commands — but you had to copy and paste manually.
 
-Sometimes you start typing in Claude Code's chat input and want to start over. Here's what you need to know:
+## Hands-on Exercise: Practice 2 (Using Slash Command)
 
-- Press **Ctrl+C once** to clear the current input
-- Press **Ctrl+C twice** to exit Claude Code entirely
+Now experience the convenience of a slash command.
 
-This is useful when you've pasted something and want to clear it, or when you changed your mind about what to ask.
-
-## Hands-on Exercise
-
-Let's practice what you've learned.
-
-**Your task:** Use the message file to ask Claude Code a question.
-
-First, open `.claude/claude-code-messages-example.md` in your editor. You'll see it already has a sample message at the bottom:
+In Claude Code, simply type:
 
 ```
-Help me understand what I need to know from README.md
+/convert-currency How much is $180 USD in Euro?
 ```
 
-Copy this line and paste it into Claude Code. Watch how Claude reads the README and summarizes the key points for you.
+Compare this to Practice 1:
+- Practice 1: Copy a large block of text, paste it, run it (**lots of work**)
+- Practice 2: Type a short command (**minimal effort**)
 
-Now try writing your own message in the file. Add a new section at the bottom (below a `----` line) and write a question about any file in this project. Copy and paste it into Claude Code.
+That's the power of slash commands — same result, fraction of the effort.
 
-## Common Issues
+## How Slash Commands Work Behind the Scenes
 
-**Accidentally sent an incomplete message**
+When you type `/convert`, Claude Code:
 
-This is exactly why we use the message file approach. If you compose in the file first, you can review and edit before sending. For now, just continue the conversation — Claude will understand if you add more context.
+1. Searches for all available commands matching "convert"
+2. Shows you a list (in this case, `/convert-currency`)
+3. You select it or finish typing the full name
+4. Claude loads the system prompt from `.claude/skills/convert-currency/SKILL.md`
+5. Your arguments get inserted where `$ARGUMENTS` appears
+6. Claude processes the request with the complete context
 
-**Not sure which path to use**
+This is why **you don't need to memorize command names**. Start typing and Claude Code's autocomplete helps you find what you need.
 
-Always use "Copy Path" (absolute path), not "Copy Relative Path". The absolute path starts from the root (`/`) and includes the full directory structure.
+## Why We're Starting Simple
 
-**File changes aren't reflected**
+You might have heard the term "Skills" in Claude Code. That's the full power of this system. But slash commands are just 10% of what Skills can do. For now, think of them as convenient prompt shortcuts.
 
-Make sure you save the file before copying. Most editors show an unsaved indicator (like a dot) in the tab.
+Later, we'll explore:
+- Creating custom skills
+- Building complex workflows
+- Integrating with tools and APIs
 
-## Mentor's Note: Thoughtful Communication
-
-When I first started using AI assistants, I would type questions stream-of-consciousness style — just thinking out loud. The results were hit or miss.
-
-Over time, I learned that the quality of AI responses directly correlates with the quality of your prompts. Taking a moment to compose your thoughts, organize your request, and provide clear context makes a huge difference.
-
-The message file approach isn't just about convenience — it's about building a habit of thoughtful communication. This skill transfers to everything: writing emails, documentation, code comments, and even conversations with colleagues.
-
-The few seconds you spend organizing your thoughts often save minutes of back-and-forth clarification.
+But for today, focus on understanding: slash commands = faster access to your favorite prompts.
 
 ## Quick Reference
 
-- Message file location: `.claude/claude-code-messages.md`
-- Separator between messages: `----` (horizontal line)
-- Copy file path: Right-click → "Copy Path" in VS Code/Codespaces
-- Clear chat input: Ctrl+C (once to clear, twice to exit)
-- Write new messages at the top of the file
+- **Autocomplete:** Type `/` to see available commands; you don't need to memorize them
+- **Syntax:** `/command-name arguments`
+- **View a skill:** `cat .claude/skills/[skill-name]/SKILL.md`
+- **Concept:** Slash commands = prompt templates + quick access
+- **Benefit:** Execute complex workflows with minimal typing
+
+## Mentor's Note: Automating Repetitive Workflows
+
+Early in my career, I'd write the same instructions over and over. "Here's how I want you to analyze code..." or "Please convert this using exchange rates..."
+
+The repetition was tedious, but worse, it was error-prone. I'd forget details, make typos, or phrase things slightly differently each time.
+
+Once I realized I could automate these workflows, everything changed. Instead of context-switching between typing instructions and waiting for responses, I could focus on the actual task.
+
+This is a core principle of good engineering: **automate what repeats**. Slash commands are a simple way to practice this — and the habit transfers to everything you build.
 
 ## Further Reading
 
+- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
 - [Prompt Engineering Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
