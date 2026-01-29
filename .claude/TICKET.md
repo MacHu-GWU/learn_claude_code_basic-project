@@ -8,7 +8,7 @@ Read the tutorial: [Managing Sessions](https://github.com/MacHu-GWU/learn_claude
 
 ## Actionable Items
 
-1. Read the tutorial in `03-managing-sessions.md`
+1. Read the tutorial in `README.md`
 2. **Practice 1 (Understanding Session Isolation):**
    - Start Claude Code normally: `claude`
    - Tell Claude: `Let me tell you: my favorite food is cheese burger`
