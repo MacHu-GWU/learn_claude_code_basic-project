@@ -8,7 +8,7 @@ Read the tutorial: [Using Slash Commands](https://github.com/MacHu-GWU/learn_cla
 
 ## Actionable Items
 
-1. Read the tutorial in `04-using-slash-commands.md`
+1. Read the tutorial in `README.md`
 2. View the system prompt: `cat .claude/skills/convert-currency/SKILL.md`
 3. **Practice 1 (Manual):** Copy the system prompt from the tutorial, replace `$ARGUMENTS` with "How much is $180 USD in Euro?", and paste into Claude Code
 4. **Practice 2 (Slash Command):** Type `/convert-currency How much is $180 USD in Euro?` into Claude Code
