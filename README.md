@@ -1,182 +1,224 @@
-# Managing Sessions
+# Understanding Context
 
-> Learn how Claude Code sessions work and how to manage conversation history across multiple conversations.
+> Learn what context is, why it matters, and how to manage it effectively to get better results from Claude Code.
 
 ## Why This Matters
 
-Imagine you're working on a project and chatting with Claude Code about it. You share context — file paths, requirements, your preferences. Claude understands everything.
+Imagine you're chatting with Claude Code about designing a nutrition plan. You discuss different foods, their health benefits, calorie counts, and make decisions together. The conversation spans 20+ exchanges.
 
-Then you close Claude Code and come back tomorrow. You ask Claude the same question... and it has no idea what you were talking about.
+Then, in the same session, you ask Claude a completely unrelated question: "How do I debug this Python error?"
 
-This isn't a bug — it's how sessions work. Each time you start Claude Code, you get a fresh conversation. That's good for keeping things organized, but what if you want to continue a previous conversation or review what you discussed before?
+You notice Claude's answer feels... off. Less detailed. Less helpful than usual. It's not that Claude got dumber. It's that Claude's attention is being divided.
 
-That's where session management comes in. Claude Code lets you:
-- **Resume** a previous session (continue where you left off)
-- **Browse** past sessions (find and replay old conversations)
-- **Keep organized** conversation history
+Every word you type, every response Claude gives, every file you reference — they all add up. At some point, Claude has so much information to juggle that the really important stuff gets buried.
 
-## What Are Sessions?
+This is about **context** — the total information Claude is working with at any moment.
 
-A **session** is a single conversation with Claude Code. It's a complete record of everything you said and everything Claude responded with.
+## What Is Context?
 
-Think of it like notebooks:
-- Each time you start Claude Code, you open a **new notebook**
-- Everything in that conversation goes in that notebook
-- When you exit, the notebook is saved
-- Next time you start Claude Code, you get a **blank notebook** (new session)
+**Context** is everything Claude can "see" right now:
 
-This separation is useful because:
-1. **Organization** — Each project/task can have its own session
-2. **Privacy** — Sessions are isolated from each other
-3. **History** — You can go back to any past session anytime
+- Your previous questions in this conversation
+- Claude's previous answers
+- Files you've asked Claude to read
+- System prompts (from slash commands)
+- Any text you've pasted
 
-## Understanding Session Persistence
+Think of it like your brain's working memory. You can hold a lot of information in your head, but there's a limit. If you keep adding more and more, something gets forgotten.
 
-By default, Claude Code works like this:
+## The Context Window
 
-**Session 1:**
+Claude has a **context window** — the maximum amount of information it can process at once.
+
+Think of it like RAM on a computer:
+- Limited size
+- Everything you're actively using takes up space
+- When it fills up, performance degrades
+
+Claude's context window is large (200,000 tokens), but it's not infinite. And each conversation uses it up.
+
+## What Consumes Context?
+
+Everything in your session counts toward your context:
+
 ```
-                        Let me tell you: my favorite food is pizza
-Got it.
-
-                        What's my favorite food?
-Your favorite food is pizza.
-(Exit Claude Code - Session saved)
-```
-
-**Session 2:** (New session, fresh start)
-```
-                        What's my favorite food?
-I don't know what your favorite food is. We haven't discussed this.
-```
-
-Claude has no memory of Session 1 during Session 2. This is intentional — each session is independent. But Claude Code saves every session. You can access them later using session commands.
-
-## Session Commands
-
-Claude Code provides two commands to manage sessions:
-
-### `-c` — Continue Previous Session
-
-```bash
-claude -c
-```
-
-This **continues** the last session you were in. All the context from your previous conversation comes back. It's like opening the same notebook you had before.
-
-### `-r` — Resume from Session History
-
-```bash
-claude -r
++--------------------------------------+
+| System Prompt (slash commands)       | ~500 tokens
++--------------------------------------+
+| Your first question                  | ~50 tokens
+| Claude's first answer                | ~200 tokens
++--------------------------------------+
+| Your second question                 | ~60 tokens
+| Claude's second answer               | ~180 tokens
++--------------------------------------+
+| File you asked Claude to read        | ~1,000 tokens
++--------------------------------------+
+| Your third question                  | ~70 tokens
+| Claude's third answer                | ~220 tokens
++--------------------------------------+
+| Total in use: ~2,280 tokens          |
+| Remaining: ~197,720 tokens (98%)     |
++--------------------------------------+
 ```
 
-This shows you a list of all your past sessions. You can pick which one you want to resume. It's like browsing your notebook collection and picking the one you want to open.
+Every exchange adds up. Small contributions become big problems.
 
-## Hands-on Exercise 1: Understanding Session Isolation
+## Problems with Long Context
 
-Let's learn how sessions work by experiencing the isolation.
+### Problem 1: Context Pressure and Compression
 
-**Part A: Create context in a session**
+When your context gets close to the limit, Claude automatically compresses the history. It tries to keep the most important information and condense the rest.
 
-1. Start Claude Code normally: `claude`
-2. Tell Claude about your preferences: `Let me tell you: my favorite food is cheese burger`
-3. Verify Claude remembers: Ask `What's my favorite food?`
-4. Claude should answer: "Your favorite food is cheese burger"
+But here's the catch: **Claude doesn't know what's important to you.**
 
-**Part B: Exit and start fresh**
+It might compress away the one crucial detail you needed. The result? Claude gives you incomplete answers because it forgot key context.
 
-5. Exit Claude Code (Ctrl+C twice)
-6. Start Claude Code again normally: `claude`
-7. Ask the same question: `What's my favorite food?`
-8. Claude responds: "I don't know what your favorite food is"
+### Problem 2: Token Waste
 
-**What happened?**
+Each exchange costs tokens. If your session is huge but your new question is unrelated to the old discussion, you're paying the price for information you're not using.
 
-You created two separate sessions. Session 1 had your food preference. Session 2 started fresh with no context. The information wasn't lost — it's stored — but Session 2 can't see it because they're separate conversations.
+Example:
+- You spent 10,000 tokens discussing database design
+- Now you ask about CSS styling
+- Claude still has to process all 10,000 tokens from the database discussion
+- Cost: ~10,000 tokens for context that's irrelevant
 
-This is why managing sessions matters. Without tools to resume or review, you'd lose important context.
+That's like paying to have someone read you the entire history book when you only needed one chapter.
 
-## Hands-on Exercise 2: Resuming with `-c`
+## Why Managing Sessions Matters
 
-Now let's use the `-c` flag to continue a previous session.
+This is why the **Managing Sessions** tutorial is important. Sessions let you:
 
-**Part A: Create a new session with context**
+- **Start fresh** — New session = clean context
+- **Stay focused** — One conversation = one problem
+- **Recover when needed** — Use `-c` or `-r` to go back if you need old context
 
-1. Start Claude Code: `claude`
-2. Tell Claude something: `Let me tell you my favorite programming language is Python`
-3. Exit Claude Code
+Sessions are your tool for managing context effectively.
 
-**Part B: Resume the session with -c**
+## The Solution: Documentation Strategy
 
-4. Run: `claude -c`
-5. Claude Code should show: "Resuming session..." or similar
-6. Ask a question: `What programming language do I like?`
-7. Claude responds: "Your favorite programming language is Python" (remembers!)
+Here's the key insight: **Don't keep context — extract it.**
 
-**What happened?**
+Instead of relying on your session history, create a document:
 
-The `-c` flag resumed your last session. All the context from that conversation came back. It's like reopening the same notebook instead of getting a new one.
+1. Have a focused conversation with Claude
+2. When done, ask Claude to summarize the key points into a **concise document**
+3. Save that document to your project
+4. In future sessions, reference the document instead of relying on history
 
-## Hands-on Exercise 3: Browsing Sessions with `-r`
+Example:
+```
+You: Based on our discussion about nutrition, I think the key points are:
+- Low-calorie options that taste good
+- Easy preparation methods
+- My chosen foods to try
 
-Now let's use the `-r` flag to select from multiple past sessions.
+Please create a concise markdown document (300-500 words) summarizing the key
+recommendations and the foods I decided to try. Format it nicely so I can save
+it as docs/nutrition-plan.md.
 
-**Setup (if you haven't done Exercises 1 & 2):**
-- Make sure you have at least 2 past sessions with different context
-- Exercise 1 has one session about food
-- Exercise 2 has one session about programming languages
+Claude: [Generates concise summary markdown]
+```
 
-**The Practice:**
+In the next session:
+```
+cat docs/nutrition-plan.md
+[Continue with clean context, no history baggage]
+```
 
-1. Exit Claude Code (if you're in one)
-2. Run: `claude -r`
-3. You'll see a list of past sessions (with timestamps or summaries)
-4. Select one of your earlier sessions (e.g., the one about food or programming)
-5. You're now in that session — all context restored
-6. Ask: `What did we discuss?` or reference the information you shared
-7. Claude remembers the context from that specific session
+## How Manual Context Compression Works
 
-**What happened?**
+You can take control of compression instead of letting Claude do it automatically:
 
-The `-r` flag let you browse your entire session history and pick which one to resume. This is powerful when you have many conversations and want to continue a specific one, not just the most recent.
+1. **Identify what matters** — Tell Claude: "Which parts of our discussion are most important?"
+2. **Ask for condensing** — "Please write a 200-word summary focusing on [specific aspects]"
+3. **Reference the summary** — In future sessions, just reference the document
+
+Claude doesn't need to re-read everything. It can read the condensed version and stay focused.
+
+## When You Need Long Context
+
+Not every task requires a short context. Long context is valuable when:
+
+- **Building complex systems** — You need the full architecture visible
+- **Consistent narrative** — The story needs continuity (like writing a novel)
+- **Debugging tangled problems** — You need to see all the code interactions
+- **Collaborative design** — Multiple decisions depend on each other
+
+In these cases, use a longer session. But even then, consider:
+- Breaking it into focused phases (one session per phase)
+- Maintaining a `docs/` folder with key decisions
+- Periodically asking Claude to summarize progress
+
+## Hands-on Exercise: Create Your First Documentation
+
+Let's practice the documentation strategy in one complete exercise.
+
+**The Task: Food Recommendations**
+
+1. **Start a Claude Code session:** `claude`
+
+2. **Have a casual conversation** (5-8 exchanges):
+   - Ask: `I want to eat healthier. Can you recommend some low-calorie foods that taste good? I like [your food preferences].`
+   - Ask follow-up questions about nutrition, taste, preparation
+   - Discuss the recommendations
+   - Make a decision about which foods to try
+
+3. **Ask Claude to create documentation** (one complete prompt):
+   ```
+   Based on our discussion, I think the most important points are:
+   - Low-calorie foods that actually taste good
+   - Easy preparation methods
+   - The specific foods I decided to try
+
+   Please create a concise markdown document (300-500 words) that summarizes:
+   1. The key food recommendations we discussed
+   2. Why these foods are good choices
+   3. The specific foods I chose to try
+
+   Format it nicely because I'll save it as docs/my-nutrition-plan.md
+   ```
+
+4. **Copy Claude's response** and save it as `docs/my-nutrition-plan.md` in your project
+
+5. **Send the document link to your mentor** as proof you completed the exercise
+
+   Example: "I completed the exercise. Here's my documentation: docs/my-nutrition-plan.md"
+
+**What you're practicing:**
+- Having a meaningful conversation
+- Recognizing when to convert history into a document
+- Creating reusable, context-efficient documentation
+- Preparing for a new session (old context is gone, but the document remains)
 
 ## Quick Reference
 
-- **New session:** `claude` (default behavior)
-- **Continue last session:** `claude -c`
-- **Browse and pick a session:** `claude -r`
-- **Session storage:** Sessions are automatically saved; you don't need to do anything
-- **Context isolation:** Each session starts fresh unless you resume
-- **Alternative to -c:** `/clear` clears the current session's context but doesn't create a new session file
+- **Context** — Everything Claude is currently processing
+- **Context Window** — Maximum capacity (~200,000 tokens for Claude)
+- **Context Pressure** — When context gets full, Claude compresses (risking information loss)
+- **Session Management** — Keep conversations focused, use `-c` or `-r` to switch
+- **Documentation** — Extract key points from conversations into reusable documents
+- **Manual Compression** — Ask Claude to condense important information into concise summaries
 
-## Common Scenarios
+## Mentor's Note: Building Sustainable Workflows
 
-**Scenario 1: You're working on a project and want to come back to it tomorrow**
+Early in my work with AI, I'd have these long, sprawling conversations. "I'll keep all this in context," I thought. Then I'd realize I couldn't remember what we decided, and Claude couldn't either — it was buried in 30,000 tokens of chat history.
 
-Use `claude -c` to resume where you left off. All your context is there.
+I learned the hard way: **context is not memory. Documents are.**
 
-**Scenario 2: You've had many conversations and can't remember which one had important information**
+The shift in thinking: Instead of asking "How do I keep this in context?", ask "How do I extract the value from this conversation into something I can reuse?"
 
-Use `claude -r` to browse sessions and find the one you need.
+It changed everything:
+- Conversations became more focused
+- I built a knowledge base of documented decisions
+- New sessions were clean and fast
+- Future me could reference past work without re-discussing it
 
-**Scenario 3: You want to start completely fresh without the previous context, but keep the old session saved**
+The best engineers I know practice this ruthlessly. They don't accumulate context; they compress it. They don't rely on memory; they document systematically.
 
-Just start Claude Code normally with `claude`. A new session is created, and your old one is preserved for later.
-
-## Mentor's Note: Organizing Your Thinking
-
-Early in my career, I'd lose important conversations. "Wait, which session did I discuss the architecture in?" or "What were the requirements we agreed on?"
-
-I learned that session management is like project management for your conversations. Each focused conversation gets its own session. When you come back to it, everything is there.
-
-The real skill is knowing when to start a new session. Here's my pattern:
-- **New session for each project/task** — Different goals deserve different notebooks
-- **Don't switch sessions mid-task** — Finish your current session before starting a new one
-- **Review old sessions when stuck** — Look back at how you solved similar problems
-
-Over time, your session history becomes a personal knowledge base. You can trace your thinking, see how you approach problems, and even learn from mistakes.
+This one habit — converting conversations into documentation — will serve you in every tool, not just Claude Code.
 
 ## Further Reading
 
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [Workflow Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
+- [Claude Context Window Documentation](https://docs.anthropic.com/en/docs/about-claude/models/overview)
+- [Prompt Engineering Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)

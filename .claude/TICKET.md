@@ -1,54 +1,82 @@
-# Learn to Manage Sessions
+# Learn to Understand and Manage Context
 
 ## Objective
 
-Learn how Claude Code sessions work, how to manage conversation history, and how to use session commands (`-c` and `-r`) to resume or browse past conversations.
+Learn what context is, why it matters, and how to manage it effectively through documentation strategies. Understand that context has limits and how to work within those limits to maintain Claude's performance.
 
-Read the tutorial: [Managing Sessions](https://github.com/MacHu-GWU/learn_claude_code_basic-project/tree/05-managing-sessions/)
+Read the tutorial: [Understanding Context](https://github.com/MacHu-GWU/learn_claude_code_basic-project/tree/06-understanding-context/)
 
 ## Actionable Items
 
-1. Read the tutorial in `03-managing-sessions.md`
-2. **Practice 1 (Understanding Session Isolation):**
-   - Start Claude Code normally: `claude`
-   - Tell Claude: `Let me tell you: my favorite food is cheese burger`
-   - Ask: `What's my favorite food?` (Claude answers correctly)
-   - Exit Claude Code
-   - Start Claude Code again: `claude`
-   - Ask: `What's my favorite food?` (Claude doesn't remember)
-   - Reflect: Notice the session isolation
+1. Read the tutorial in `README.md`
 
-3. **Practice 2 (Resuming with -c):**
+2. **Complete the Exercise: Create Your First Documentation**
+
+   **Part A: Have a Conversation (5-8 exchanges)**
    - Start Claude Code: `claude`
-   - Tell Claude: `Let me tell you my favorite programming language is Python`
-   - Exit Claude Code
-   - Resume with: `claude -c`
-   - Ask: `What programming language do I like?` (Claude remembers)
+   - Ask for food recommendations: "I want to eat healthier. Can you recommend some low-calorie foods that taste good? I like [your food preferences]."
+   - Have a casual conversation:
+     - Ask follow-up questions about nutrition, taste, preparation
+     - Discuss the recommendations
+     - Ask Claude to explain the reasoning behind recommendations
+     - Make a decision about which foods to try
 
-4. **Practice 3 (Browsing with -r):**
-   - Exit Claude Code
-   - Browse sessions: `claude -r`
-   - Select one of your past sessions
-   - Verify the context is restored by asking a question about what you discussed
+   **Part B: Extract to Documentation**
+   - Ask Claude with one complete prompt:
+     ```
+     Based on our discussion, I think the most important points are:
+     - Low-calorie foods that actually taste good
+     - Easy preparation methods
+     - The specific foods I decided to try
 
-5. Leave a comment on this ticket to let your mentor know you've completed it
+     Please create a concise markdown document (300-500 words) that summarizes:
+     1. The key food recommendations we discussed
+     2. Why these foods are good choices
+     3. The specific foods I chose to try
 
-**Estimated time:** 15-20 minutes
+     Format it nicely because I'll save it as docs/my-nutrition-plan.md
+     ```
+   - Copy Claude's response
+   - Save it as `docs/my-nutrition-plan.md` in your project directory
+   - Create the `docs/` directory if it doesn't exist
+
+   **Part C: Submit Your Work**
+   - Open a new session: `claude -c` or just `claude`
+   - Verify your document exists: `cat docs/my-nutrition-plan.md`
+   - Take a screenshot or copy the output showing the document was created
+   - Leave a comment on this ticket with:
+     - "Exercise completed"
+     - A link/reference to your `docs/my-nutrition-plan.md` file
+     - Brief reflection: "What did I learn about context and documentation?"
+
+**Estimated time:** 20-30 minutes
 
 ## Key Concepts to Understand
 
-- A **session** is a single conversation with all context saved
-- Sessions are **isolated** by default (new session = blank slate)
-- **`-c`** continues your last session
-- **`-r`** lets you browse and pick from past sessions
-- **`/clear`** clears context in the current session but doesn't create a new session file
-- Sessions are stored automatically; you don't need to do anything to save them
+- **Context** — Everything Claude is currently processing (history, files, prompts)
+- **Context Window** — The maximum amount Claude can process at once (~200,000 tokens)
+- **Context Pressure** — When context gets full, Claude compresses history (important info might be lost)
+- **Documentation Strategy** — Convert conversations into reusable documents instead of relying on history
+- **Manual Compression** — Ask Claude to condense important information into concise summaries
+- **When to Use Long Context** — Complex systems, consistent narratives, debugging
+- **When to Use Short Context** — Independent queries, focused problems
 
 ## Checklist
 
-- [ ] **Read tutorial** - Finished reading 03-managing-sessions.md
-- [ ] **Practice 1** - Experienced session isolation (context lost after exit)
-- [ ] **Practice 2** - Used `-c` to resume a session and verified context was restored
-- [ ] **Practice 3** - Used `-r` to browse sessions and re-entered a past session
-- [ ] **Understand the concept** - Know the difference between sessions and context clearing
-- [ ] **Notify mentor** - Left a comment saying "Done" or describing what you learned
+- [ ] **Read tutorial** - Finished reading 05-understanding-context.md
+- [ ] **Started exercise** - Began casual conversation about food recommendations in Claude Code
+- [ ] **Had full conversation** - Completed 5-8 exchanges discussing recommendations and made a decision
+- [ ] **Generated documentation** - Asked Claude to summarize into markdown format
+- [ ] **Saved document** - Successfully saved to `docs/my-nutrition-plan.md`
+- [ ] **Verified creation** - Confirmed document exists in a new session
+- [ ] **Submitted work** - Left comment with documentation link and reflection
+- [ ] **Sent to mentor** - Shared the GitHub link to `docs/my-nutrition-plan.md` with your mentor
+- [ ] **Understood the benefit** - Know how documentation replaces the need to keep context
+
+## Reflection Questions (Optional)
+
+After completing the exercise, consider:
+- How did the conversation flow naturally from one question to the next?
+- Would this conversation have been harder if Claude had dozens of other conversations in its context?
+- How does having a 300-500 word summary compare to having to re-read the entire conversation?
+- When might you use this documentation strategy in your real work?
