@@ -1,5 +1,6 @@
 # User Settings
 .claude/claude-code-messages.md
+.idea
 tmp
 
 # Byte-compiled / optimized / DLL files
