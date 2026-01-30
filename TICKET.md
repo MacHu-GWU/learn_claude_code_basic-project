@@ -1,4 +1,4 @@
-# Learn to Use Slash Commands
+# Learn to Use Slash Commands in Claude Code
 
 ## Objective
 
