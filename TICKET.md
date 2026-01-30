@@ -1,4 +1,4 @@
-# Learn to Understand and Manage Context
+# Learn to Understand and Manage Context in Claude Code
 
 ## Objective
 
