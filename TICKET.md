@@ -1,4 +1,4 @@
-# Learn to Manage Sessions
+# Learn to Manage Sessions in Claude Code
 
 ## Objective
 
