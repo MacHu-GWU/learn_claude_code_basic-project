@@ -39,7 +39,10 @@ By the end of this lesson, students will:
 **Guide them through:**
 
 1. Start a fresh Claude session: `claude`
-2. Give a vague prompt: "I need a currency converter tool. Help me build it."
+2. Give a vague prompt:
+   ```
+   /teach-code I need a currency converter tool. Help me build it.
+   ```
 3. Let Claude ask questions or make assumptions
 4. Have them run the resulting app
 
@@ -63,7 +66,10 @@ By the end of this lesson, students will:
 **Guide them through:**
 
 1. Start a new session: `claude` (or `/clear` if same session)
-2. Use the prompt: "READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it."
+2. Use the prompt:
+   ```
+   /teach-code READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it.
+   ```
 3. Watch Claude reference the spec and build to match it exactly
 4. Have them run the app
 
@@ -85,13 +91,12 @@ By the end of this lesson, students will:
 3. Use this prompt:
 
 ```
-I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally.
-
-Please help me figure out the detailed spec by asking me questions to define this requirement in detail. After a few rounds of Q&A (like an interview), write my final decisions to app-spec.md for future reference.
+/teach-brainstorm I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally. Help me figure out the detailed spec by asking me questions.
 ```
 
 4. Have them answer Claude's questions naturally
-5. Review the generated spec together
+5. After decisions are made, Claude will generate a decision doc in `./tmp/notes/`
+6. Review the generated spec together
 
 **Teaching moves:**
 
@@ -148,6 +153,14 @@ SUPPORTING SKILLS
 │  ├─ `claude -c` — continue last session
 │  └─ `claude -r` — resume from history
 │
+├─ Teaching Commands
+│  ├─ `/teach-start` — guided learning session
+│  ├─ `/teach-code` — write code + learning notes
+│  ├─ `/teach-explain` — understand code/concepts
+│  ├─ `/teach-debug` — debug + learn stack traces
+│  ├─ `/teach-brainstorm` — clarify fuzzy ideas
+│  └─ `/teach-check` — verify work against checklist
+│
 └─ Reading & Understanding Requirements
    └─ What makes `app-spec.md` effective?
 ```
@@ -186,7 +199,7 @@ SUPPORTING SKILLS
 **Intervention:**
 
 1. Normalize it: "That's totally normal. Most people can't write specs."
-2. Point them to Exercise 3: "You don't need to know upfront. Use the interview technique."
+2. Point them to Exercise 3: "You don't need to know upfront. Use `/teach-brainstorm` — the interview technique."
 3. Walk through Exercise 3 with them if they're stuck
 4. Show: "Claude asked questions you wouldn't ask yourself. That's the power of this technique."
 
@@ -236,7 +249,7 @@ streamlit run app-example.py
 
 Use it as the "north star" for quality. Questions like "How close is your version to this?" are much more concrete than "Is your app good?"
 
-### The Interview Technique is a Superpower
+### The Interview Technique (`/teach-brainstorm`) is a Superpower
 
 Don't gloss over Exercise 3. This is where students discover they can use AI to think. Point out:
 
@@ -260,7 +273,7 @@ This reduces friction and lets students explore without fear.
 
 Explicitly tell students: "You're not learning Python today. You're learning how to communicate with AI. Python and Streamlit are just the tools Claude uses—not the lesson."
 
-If students ask about the code in `app.py`, redirect: "Sure, Claude can explain that. But for this lesson, focus on the bigger pattern: clarity → quality."
+If students ask about the code in `app.py`, redirect: "Sure, you can use `/teach-explain` to understand that. But for this lesson, focus on the bigger pattern: clarity → quality."
 
 ---
 
@@ -288,7 +301,7 @@ If students ask about the code in `app.py`, redirect: "Sure, Claude can explain 
 
 **Wrong.** You can ask Claude to help you figure out what you want.
 
-**Correct:** "The interview technique (Exercise 3) is for exactly this. You don't need clarity upfront—you can discover it through conversation."
+**Correct:** "`/teach-brainstorm` (Exercise 3) is for exactly this. You don't need clarity upfront—you can discover it through conversation."
 
 ---
 
@@ -332,7 +345,7 @@ This is fine! Point it out: "See? You made different choices than the official s
 
 ### "Students ask technical questions about the code"
 
-Redirect gently: "Claude can explain that. For now, focus on the lesson: clarity of communication. The code is just an implementation detail."
+Redirect gently: "You can use `/teach-explain` to understand that. For now, focus on the lesson: clarity of communication. The code is just an implementation detail."
 
 ---
 
@@ -346,7 +359,7 @@ If students finish early or want to go deeper:
 
 3. **Interview Retrospective:** "In Exercise 3, which questions that Claude asked were most helpful? Why?"
 
-4. **Real-World Application:** "Think of a project you want to build. Draft a spec for it. Use the interview technique if you get stuck."
+4. **Real-World Application:** "Think of a project you want to build. Draft a spec for it. Use `/teach-brainstorm` if you get stuck."
 
 ---
 
@@ -355,8 +368,49 @@ If students finish early or want to go deeper:
 - **The lesson is about communication, not code.** Don't get pulled into Python/Streamlit explanations.
 - **The aha moment is Exercise 1 → 2.** Spend time on the comparison.
 - **Session management matters.** Teach `claude -c` and `claude -r` early so students aren't afraid to experiment.
-- **The interview technique is the superpower.** Make sure students feel how powerful it is to have AI help them think.
+- **The interview technique (`/teach-brainstorm`) is the superpower.** Make sure students feel how powerful it is to have AI help them think.
 - **Clarity can be discovered.** Emphasize that students don't need perfect upfront knowledge; they can discover clarity through conversation.
+
+---
+
+## Verifying Student Submissions
+
+When students submit their `app.py` file link, use these quick verification steps:
+
+**Step 1: Run the app**
+
+```bash
+.venv/bin/streamlit run app.py
+```
+
+- Check if the app starts without errors
+- Open the URL in browser (usually `http://localhost:8501`)
+- Test basic conversion: enter an amount, select currencies, verify result appears
+- Press `Ctrl+C` to stop the app when done
+
+**Step 2: Quick code review**
+
+```bash
+cat app.py
+```
+
+Look for:
+
+- **Reasonable structure** — imports at top, main logic organized
+- **Currency handling** — should support multiple currencies (ideally USD, CNY, EUR, GBP, JPY per spec)
+- **No obvious issues** — no hardcoded single conversion, no broken logic
+- **Evidence of understanding** — code should match what student said they built, not just copy-pasted
+
+**What to check vs. what to ignore:**
+
+- **Check:** App runs, conversion works, code makes sense
+- **Ignore:** Code style, minor differences from reference implementation, different UI choices
+
+**Red flags:**
+
+- App doesn't run at all
+- Code is clearly copy-pasted from somewhere without understanding
+- Student can't explain what their code does when asked
 
 ---
 
