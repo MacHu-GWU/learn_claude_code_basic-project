@@ -1,4 +1,4 @@
-# Learn to Edit Long Messages
+# Learn to Edit Long Messages in Claude Code
 
 ## Objective
 
