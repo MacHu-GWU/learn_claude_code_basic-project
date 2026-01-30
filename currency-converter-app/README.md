@@ -16,6 +16,8 @@ Think of AI like a super-talented intern who just joined your team. They can do 
 
 ## Learning Objectives
 
+In the age of AI-assisted development, the bottleneck has shifted. The hardest part is no longer "how to implement" — it's "what to implement." The ability to clearly express what you want, in natural language, is becoming more valuable than memorizing syntax. This exercise teaches you that fundamental skill through direct experience.
+
 By the end of this exercise, you will:
 
 1. **Experience the power of "vibe coding"** — building apps by describing what you want
@@ -42,6 +44,66 @@ It's a small app, but it's a **real app** — the kind of thing that would take 
 
 ---
 
+## Reference Implementation: See the Goal First
+
+Before you start the exercises, run the reference implementation to see what a polished, well-built app looks like:
+
+```bash
+streamlit run app-example.py
+```
+
+This is the **mentor's reference implementation** — the gold standard for this project. Use it as a visual anchor to compare:
+
+- How clean the UI looks
+- How the error handling works
+- How the interface is organized
+- How the currencies are displayed
+
+**Why do this first?** Without seeing the target, you won't know if your Exercise 1 result is mediocre or excellent. Use `app-example.py` as your reference for what "done well" looks like.
+
+---
+
+## Key Concepts
+
+Before diving into the exercises, let's understand the core ideas that make AI-assisted development effective.
+
+### The Clarity-Quality Relationship
+
+There's a direct relationship between how clearly you communicate and how good the output will be:
+
+- **Vague input** → Unpredictable output (AI fills in gaps with assumptions)
+- **Clear input** → Precise output (AI delivers exactly what you specified)
+- **Iterative discovery** → Personalized output (you refine requirements through conversation)
+
+This isn't unique to AI — it's true for any collaboration. But with AI, the effect is amplified because AI can't read your mind. It can only work with what you explicitly tell it.
+
+### Three Approaches to Working with AI
+
+**Approach 1: Direct Request (Quick & Dirty)**
+- Give a minimal prompt, let AI make assumptions
+- Good for: Quick experiments, exploring possibilities, low-stakes tasks
+- Risk: Output may not match your mental picture
+
+**Approach 2: Clear Specification**
+- Write detailed requirements upfront, then ask AI to implement
+- Good for: When you already know exactly what you want
+- Risk: Requires upfront thinking that many people skip
+
+**Approach 3: Interview Technique**
+- Ask AI to interview you about requirements before building
+- Good for: When you have a rough idea but haven't figured out details
+- Benefit: AI asks questions you wouldn't think to ask yourself
+
+Most real-world tasks fall into Approach 3. You have a rough idea, but the details are fuzzy. The interview technique lets you discover clarity through conversation.
+
+### Why Requirements Matter More Than Code
+
+In traditional programming, the bottleneck was "how do I implement this?" You needed to know syntax, libraries, and patterns.
+
+With AI-assisted development, the bottleneck shifts to "what exactly do I want?" The clearer you can describe the goal, the better AI can implement it. This is why learning to think clearly and communicate precisely is now a core skill.
+
+---
+
 ## Exercises
 
 ### Exercise 1: The "One-Liner" Approach
@@ -55,7 +117,7 @@ It's a small app, but it's a **real app** — the kind of thing that would take 
 3. Type this prompt (or something similar in your own words):
 
 ```
-I need a currency converter tool. Help me build it.
+/teach-code I need a currency converter tool. Help me build it.
 ```
 
 4. Let Claude do its thing. It will probably:
@@ -88,7 +150,7 @@ This is not Claude's fault. **Claude built exactly what you asked for — which 
 2. This time, use this prompt:
 
 ```
-READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it.
+/teach-code READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it.
 ```
 
 3. Watch Claude work. It will:
@@ -127,9 +189,7 @@ There's a better way: **let AI interview you**.
 2. Use this prompt:
 
 ```
-I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally.
-
-Please help me figure out the detailed spec by asking me questions to define this requirement in detail. After a few rounds of Q&A (like an interview), write my final decisions to app-spec.md for future reference.
+/teach-brainstorm I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally. Help me figure out the detailed spec by asking me questions.
 ```
 
 3. **Answer Claude's questions.** It might ask things like:
@@ -140,7 +200,7 @@ Please help me figure out the detailed spec by asking me questions to define thi
 
 4. **Make decisions.** Don't overthink it — just answer based on your preferences.
 
-5. **Review the generated spec.** Claude will write an `app-spec.md` file based on your answers. Check if it captures what you discussed.
+5. **Review the generated decision doc.** Claude will write a decision document in `./tmp/notes/` based on your answers. Check if it captures what you discussed.
 
 **What you'll learn:**
 
@@ -154,11 +214,17 @@ You just created a clear requirement document without knowing how to write one! 
 
 Let's step back and think about what just happened:
 
-| Approach | Input Quality | Output Quality |
-|----------|--------------|----------------|
-| Exercise 1 | Vague (one sentence) | Unpredictable, "good enough" |
-| Exercise 2 | Clear (detailed spec) | Precise, matches expectations |
-| Exercise 3 | Started vague, became clear (through Q&A) | High quality, personalized |
+**Exercise 1 (Vague Input)**
+- Input quality: One sentence, minimal detail
+- Output quality: Unpredictable, "good enough"
+
+**Exercise 2 (Clear Spec)**
+- Input quality: Detailed requirements document
+- Output quality: Precise, matches expectations exactly
+
+**Exercise 3 (Interview Technique)**
+- Input quality: Started vague, became clear through Q&A
+- Output quality: High quality, personalized to your choices
 
 **The pattern is clear:** Better input = Better output.
 
@@ -202,11 +268,9 @@ This is the real power move: **use AI to become a clearer thinker, then use that
 
 **The three approaches you experienced:**
 
-| Approach | When to use it |
-|----------|----------------|
-| Direct request (Exercise 1) | Quick experiments, low-stakes tasks |
-| Clear spec (Exercise 2) | You already know exactly what you want |
-| Interview technique (Exercise 3) | You have an idea but haven't figured out the details |
+- **Direct request (Exercise 1):** Use for quick experiments, low-stakes tasks
+- **Clear spec (Exercise 2):** Use when you already know exactly what you want
+- **Interview technique (Exercise 3):** Use when you have an idea but haven't figured out the details
 
 Most real-world tasks fall into the third category. You have a rough idea, but the details are fuzzy. Don't pretend otherwise — embrace it, and let AI help you clarify.
 
@@ -247,28 +311,18 @@ streamlit run app.py
 /clear
 ```
 
+**Continue last session (if you accidentally pressed Ctrl+C):**
+```bash
+claude -c
+```
+
+**Resume from session history:**
+```bash
+claude -r
+```
+
 **Key files:**
 - `app-spec.md` — The requirement document (read this to understand what a good spec looks like)
 - `app.py` — The app code (generated by Claude)
 - `rates.json` — Exchange rate data (generated by Claude)
-
----
-
-## Reference Implementation: See the Goal First
-
-Before you start the exercises, run the reference implementation to see what a polished, well-built app looks like:
-
-```bash
-streamlit run app-example.py
-```
-
-This is the **mentor's reference implementation** — the gold standard for this project. Use it as a visual anchor to compare:
-
-- How clean the UI looks
-- How the error handling works
-- How the interface is organized
-- How the currencies are displayed
-
-**Why do this first?** Without seeing the target, you won't know if your Exercise 1 result is mediocre or excellent. Use `app-example.py` as your reference for what "done well" looks like.
-
-After completing each exercise, run it again and ask yourself: "How close is my result to this reference implementation?"
+- `app-example.py` — Reference implementation (mentor's gold standard)

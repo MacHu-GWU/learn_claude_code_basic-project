@@ -16,6 +16,8 @@
 
 ## 学习目标
 
+在 AI-assisted development 时代，bottleneck 已经转变。最难的部分不再是 "how to implement" — 而是 "what to implement"。用 natural language 清晰表达你想要什么的能力，正在变得比死记 syntax 更有价值。这个练习通过直接体验教你这项基本技能。
+
 在完成这个练习后，你将：
 
 1. **体验 "vibe coding" 的力量** — 通过描述你想要的东西来构建应用
@@ -42,6 +44,66 @@
 
 ---
 
+## 参考实现：先看最终目标
+
+在开始练习之前，运行参考实现来看看一个精致、设计良好的应用是什么样的：
+
+```bash
+streamlit run app-example.py
+```
+
+这是**导师的参考实现** — 这个项目的黄金标准。用它作为视觉参考来对比：
+
+- UI 看起来有多干净
+- 错误处理如何工作
+- 界面如何组织
+- currencies 如何显示
+
+**为什么先做这个？** 如果看不到最终目标，你不会知道你的练习 1 结果是平庸还是优秀。用 `app-example.py` 作为"做得好"的样子的参考。
+
+---
+
+## 核心概念
+
+在深入练习之前，让我们理解使 AI-assisted development 有效的核心思想。
+
+### Clarity-Quality 关系
+
+你沟通得多清楚和 output 多好之间存在直接关系：
+
+- **Vague input** → Unpredictable output（AI 用假设填补空白）
+- **Clear input** → Precise output（AI 准确交付你指定的内容）
+- **Iterative discovery** → Personalized output（你通过对话改进 requirements）
+
+这不仅限于 AI — 这对任何 collaboration 都适用。但与 AI 协作时，这个效果被放大，因为 AI 无法读心。它只能基于你明确告诉它的内容工作。
+
+### 与 AI 协作的三种方法
+
+**方法 1：Direct Request（快速草率）**
+- 给出最小 prompt，让 AI 做假设
+- 适合：Quick experiments、探索可能性、low-stakes tasks
+- 风险：Output 可能与你的 mental picture 不匹配
+
+**方法 2：Clear Specification**
+- 预先写好详细 requirements，然后让 AI implement
+- 适合：当你已经确切知道想要什么
+- 风险：需要很多人跳过的 upfront thinking
+
+**方法 3：Interview Technique**
+- 在构建之前请 AI interview 你关于 requirements
+- 适合：当你有粗略想法但还没想清楚细节
+- 好处：AI 问出你自己想不到的 questions
+
+大多数现实 tasks 属于方法 3。你有粗略想法，但细节 fuzzy。Interview technique 让你通过对话发现 clarity。
+
+### 为什么 Requirements 比 Code 更重要
+
+在传统编程中，bottleneck 是 "how do I implement this?"。你需要知道 syntax、libraries 和 patterns。
+
+在 AI-assisted development 中，bottleneck 转变为 "what exactly do I want?"。你能越清晰地描述目标，AI 就能越好地 implement。这就是为什么学习清晰思考和准确沟通现在是核心技能。
+
+---
+
 ## 练习
 
 ### 练习 1：一句话方法
@@ -55,7 +117,7 @@
 3. 输入这个 prompt（或用你自己的话类似地表达）：
 
 ```
-I need a currency converter tool. Help me build it.
+/teach-code I need a currency converter tool. Help me build it.
 ```
 
 4. 让 Claude 开始工作。它可能会：
@@ -88,7 +150,7 @@ I need a currency converter tool. Help me build it.
 2. 这次，使用这个 prompt：
 
 ```
-READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it.
+/teach-code READ app-spec.md to understand the currency converter app requirement, then write the python app at app.py, and teach me how to run it.
 ```
 
 3. 观看 Claude 工作。它会：
@@ -127,9 +189,7 @@ READ app-spec.md to understand the currency converter app requirement, then writ
 2. 使用这个 prompt：
 
 ```
-I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally.
-
-Please help me figure out the detailed spec by asking me questions to define this requirement in detail. After a few rounds of Q&A (like an interview), write my final decisions to app-spec.md for future reference.
+/teach-brainstorm I want to build a currency converter app that converts amounts between different currencies based on exchange rates. I want to build it in Python and run it locally. Help me figure out the detailed spec by asking me questions.
 ```
 
 3. **回答 Claude 的问题。** 它可能会问：
@@ -140,7 +200,7 @@ Please help me figure out the detailed spec by asking me questions to define thi
 
 4. **做出决定。** 不要想太多 — 根据你的偏好直接回答。
 
-5. **审查生成的 spec。** Claude 会根据你的回答写入一个 `app-spec.md` file。检查它是否 capture 了你讨论的内容。
+5. **审查生成的决策文档。** Claude 会根据你的回答在 `./tmp/notes/` 生成一个决策文档。检查它是否 capture 了你讨论的内容。
 
 **你会学到：**
 
@@ -154,11 +214,17 @@ Please help me figure out the detailed spec by asking me questions to define thi
 
 让我们退一步，思考刚才发生了什么：
 
-| 方法 | Input Quality | Output Quality |
-|------|--------------|----------------|
-| 练习 1 | Vague（一句话） | Unpredictable，"good enough" |
-| 练习 2 | Clear（detailed spec） | Precise，符合预期 |
-| 练习 3 | Started vague，became clear（通过 Q&A） | High quality，个性化 |
+**练习 1（Vague Input）**
+- Input quality：一句话，最少细节
+- Output quality：Unpredictable，"good enough"
+
+**练习 2（Clear Spec）**
+- Input quality：详细 requirements document
+- Output quality：Precise，完全符合预期
+
+**练习 3（Interview Technique）**
+- Input quality：Started vague，通过 Q&A became clear
+- Output quality：High quality，个性化到你的选择
 
 **模式很清楚：** Better input = Better output。
 
@@ -202,11 +268,9 @@ Interview technique（练习 3）是秘密武器。当你请 AI interview 你关
 
 **你体验过的三种方法：**
 
-| 方法 | 何时使用 |
-|------|---------|
-| Direct request（练习 1） | Quick experiments，low-stakes tasks |
-| Clear spec（练习 2） | 你已经确切知道想要什么 |
-| Interview technique（练习 3） | 你有想法但还没想清楚细节 |
+- **Direct request（练习 1）：** 用于 quick experiments，low-stakes tasks
+- **Clear spec（练习 2）：** 当你已经确切知道想要什么
+- **Interview technique（练习 3）：** 当你有想法但还没想清楚细节
 
 大多数现实 tasks 属于第三类。你有粗略想法，但细节 fuzzy。不要假装否则 — embrace 它，让 AI 帮你理清。
 
@@ -247,28 +311,18 @@ streamlit run app.py
 /clear
 ```
 
+**继续上一个 session（如果你不小心按了 Ctrl+C）：**
+```bash
+claude -c
+```
+
+**从 session history 恢复：**
+```bash
+claude -r
+```
+
 **关键文件：**
 - `app-spec.md` — requirement document（阅读以了解好的 spec 是什么样的）
 - `app.py` — app code（由 Claude 生成）
 - `rates.json` — exchange rate data（由 Claude 生成）
-
----
-
-## 参考实现：先看最终目标
-
-在开始练习之前，运行参考实现来看看一个精致、设计良好的应用是什么样的：
-
-```bash
-streamlit run app-example.py
-```
-
-这是**导师的参考实现** — 这个项目的黄金标准。用它作为视觉参考来对比：
-
-- UI 看起来有多干净
-- 错误处理如何工作
-- 界面如何组织
-- currencies 如何显示
-
-**为什么先做这个？** 如果看不到最终目标，你不会知道你的练习 1 结果是平庸还是优秀。用 `app-example.py` 作为"做得好"的样子的参考。
-
-完成每个练习后，再运行一次，问自己："我的结果与这个参考实现有多接近？"
+- `app-example.py` — 参考实现（导师的黄金标准）
