@@ -1,0 +1,17 @@
+[project]
+name = "expense_analyzer"
+version = "0.1.1"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "polars>=1.36.1,<2.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["currency_converter_app*"]
+exclude = [
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
