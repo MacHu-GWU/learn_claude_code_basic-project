@@ -1,27 +1,62 @@
-# 练习：用 AI 辅助完成数据分析小项目
+# Expense Analyzer: Complete the AI-Assisted Development Exercise
 
 ## Objective
 
-阅读教程文档 [练习：用 AI 辅助完成一个数据分析小项目](UrlPlaceholder)，用你学到的 AI 辅助学习方法完成一个数据分析任务。
+Build a Python expense analyzer that finds the highest spending in each category from Q3 2025 transaction data.
 
-这个练习的目的是**巩固前面学到的 AI 协作方式**——如何描述任务、如何让 AI 解释代码、如何迭代调试。技术栈选的是 Python + SQL，但重点不是学技术，而是练习方法。
+Read the tutorial: [Expense Analyzer Exercise](https://github.com/MacHu-GWU/learn_claude_code_basic-project/tree/08-expense-analyzer/expense-analyzer)
 
-## How-to Guide
+The goal is not just to make tests pass—it's to practice **AI-assisted development skills**: describing tasks clearly, asking for explanations, iterating with tests, and applying divide-and-conquer thinking.
 
-1. **阅读教程文档** — 理解任务要求和 AI 协作流程
-2. **向 AI 描述任务** — 用自己的话说清楚输入、输出、约束条件
-3. **让 AI 写代码并解释** — 不只是拿代码，还要理解它
-4. **运行测试** — `pytest test_expense_analyzer.py -v`
-5. **迭代调试** — 失败了就把错误信息给 AI，协作修复
+## Actionable Items
 
-**提示**：这个练习考验的是你和 AI 协作的方式，不是你对 SQL 的掌握程度。
+1. **Set up your environment** — Run `mise run venv-create` and `mise run inst` to create a virtual environment and install dependencies
+
+2. **Implement the four core functions in `expense_analyzer/impl.py`** — Work through each function one by one:
+   - `load_expense_data()` — Read the TSV file into a Polars DataFrame
+   - `preview_first_rows()` — Use SQL to display the first N rows
+   - `filter_q3_data()` — Filter data to Q3 2025 using SQL
+   - `find_max_expense_per_category()` — Find the max expense per category using SQL
+
+3. **Test your work** — Run `mise run test` after each function to verify correctness and iterate
+
+4. **Verify all tests pass** — Ensure `test_main_returns_dict`, `test_main_has_all_categories`, and `test_main_correct_max_expenses` all pass
 
 ## Checklist
 
-- [ ] **阅读教程文档** — 理解这个练习的目的是巩固 AI 协作方法
-- [ ] **向 AI 清晰描述任务** — 包括文件格式、列名、筛选条件、输出格式
-- [ ] **创建 `expense_analyzer.py`** — 包含 `find_max_expense_per_category` 函数
-- [ ] **使用 Polars + SQL** — 用 `pl.read_csv(separator="\t")` 读取，用 `pl.sql()` 查询
-- [ ] **让 AI 解释代码** — 确保你理解 SQL 查询在做什么
-- [ ] **测试全部通过** — 运行 `pytest test_expense_analyzer.py -v`，3 个测试全绿
-- [ ] **能向导师解释** — 说明你是如何和 AI 协作完成这个任务的
+- [ ] **Environment set up** — Virtual environment created and dependencies installed
+- [ ] **`load_expense_data()` implemented** — Reads TSV file and returns a Polars DataFrame
+- [ ] **`preview_first_rows()` implemented** — Uses SQL to select first N rows from DataFrame
+- [ ] **`filter_q3_data()` implemented** — Uses SQL to filter data to Q3 2025 date range
+- [ ] **`find_max_expense_per_category()` implemented** — Uses SQL to find max expense per category and returns a dictionary
+- [ ] **All tests pass** — Run `mise run test` and verify all 3 tests pass
+- [ ] **Learning complete** — You understand what each function does and can explain the AI collaboration method you used
+
+## Submission & Verification
+
+When you're done, run `/teach-check` to verify your work against the checklist. Say "ship it" when complete to generate RESULT.md, then share the RESULT.md file GitHub link with your instructor.
+
+## Grading Rubric
+
+> **For instructors and /teach-check assistant** — Students may skip this section.
+
+**Criterion 1: Implementation Quality (No Hardcoding)**
+- Review `expense_analyzer/impl.py` for all four functions
+- Verify functions are implemented (not just returning placeholder values like `None`)
+- Check for any hardcoded return values—implementations should use actual logic
+- Compare with `expense_analyzer/impl_example.py` to ensure it's not a direct copy-paste
+- **Note:** If code appears to be copy-pasted from reference implementation, do NOT mark as failed. Instead, prompt the student with: "I notice your implementation looks very similar to the reference. Did you really type this yourself? Remember, the goal is learning—understanding the code is more important than just making tests pass."
+
+**Criterion 2: All Tests Pass**
+- Run `mise run test`
+- Verify all 3 tests pass:
+  - `test_main_returns_dict` — `main()` returns a dictionary
+  - `test_main_has_all_categories` — all 6 expense categories are present
+  - `test_main_correct_max_expenses` — correct transaction IDs are returned for each category
+- If any test fails, provide the error output and ask student to debug with AI assistance
+
+**Criterion 3: Learning & Communication**
+- Student demonstrates understanding of the AI collaboration method used
+- Can explain their approach to breaking down the problem
+- Mentions asking AI for explanations (not just code)
+- Shows evidence of test-driven iteration
